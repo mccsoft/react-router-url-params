@@ -76,8 +76,8 @@ setQuery({ foo: 123, bar: 'zzz' }, { replace: true });
 // to unset or remove a parameter set it to undefined and use pushIn or replaceIn update types
 setQuery({ foo: undefined }) // ?foo=123&bar=zzz becomes ?bar=zzz
 
-// functional updates are also supported: this one is not supported yet
-//setQuery((latestQuery) => ({ foo: latestQuery.foo + 150 }))
+// functional updates are also supported:
+setQuery((latestQuery) => ({ foo: latestQuery.foo + 150 }))
 ```
 
 

@@ -1,4 +1,4 @@
-import { useQueryParams } from '../src';
+import { useQueryParam, useQueryParams } from '../src';
 import {
   BooleanParam,
   DateParam,
@@ -17,6 +17,7 @@ export const TestPage = () => {
     obj: ObjectParam,
     delimitedArray: DelimitedArrayParam,
   });
+  const [, setBool] = useQueryParam('bool', BooleanParam);
   return (
     <div>
       <Link to={Links.Index.link()}>Back</Link>
@@ -52,6 +53,23 @@ export const TestPage = () => {
           }}
         >
           Set to false
+        </button>
+        <button
+          onClick={() => {
+            setQueryParams((old) => {
+              old.bool = false;
+              return old;
+            });
+          }}
+        >
+          Set to false using function
+        </button>
+        <button
+          onClick={() => {
+            setBool((old) => !old);
+          }}
+        >
+          Toggle using useQueryParam function
         </button>
       </div>
       <div>

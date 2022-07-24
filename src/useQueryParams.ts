@@ -14,7 +14,11 @@ import shallowEqual from './shallowEqual';
 
 type NewValueType<D> = D | ((latestValue: D) => D);
 export type SetQueryLocal<QPCMap extends QueryParamConfigMap> = (
-  changes: Partial<DecodedValueMap<QPCMap>>,
+  changes:
+    | Partial<DecodedValueMap<QPCMap>>
+    | ((
+        latestValues: DecodedValueMap<QPCMap>,
+      ) => Partial<DecodedValueMap<QPCMap>>),
   navigateOptions?:
     | {
         replace?: boolean | undefined;
@@ -48,11 +52,17 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
     });
     return decodeQueryParams(paramConfigMap, value);
   }, [searchParamsStringified]);
+  const resultRef = useRef(result);
+  resultRef.current = result;
 
   const setValue: SetQueryLocal<QPCMap> = useCallback(
-    (value, navigateOptions) => {
-      const encoded = encodeQueryParams(paramConfigMap, value);
-      Object.keys(value).forEach((key) => {
+    (changes, navigateOptions) => {
+      const values =
+        typeof changes === 'function'
+          ? changes(resultRef.current as any)
+          : changes;
+      const encoded = encodeQueryParams(paramConfigMap, values);
+      Object.keys(values).forEach((key) => {
         const keyValue = (encoded as any)[key];
         if (Array.isArray(keyValue)) {
           keyValue.forEach((v, index) => {
@@ -101,7 +111,14 @@ export const useQueryParam = <D, D2 = D>(
     [name]: paramConfig,
   });
   const setValue: SetValue<D> = useCallback((value, navigateOptions) => {
-    setQueryParams({ [name]: value } as any, navigateOptions);
+    if (typeof value === 'function') {
+      setQueryParams((oldValues) => {
+        oldValues[name] = (value as any)(oldValues[name]);
+        return oldValues;
+      });
+    } else {
+      setQueryParams({ [name]: value } as any, navigateOptions);
+    }
   }, []);
   return useMemo(
     () => [queryParams[name], setValue],
