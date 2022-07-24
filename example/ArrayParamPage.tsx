@@ -1,11 +1,15 @@
 import { useQueryParams } from '../src';
-import { NumberParam, NumericArrayParam } from 'serialize-query-params';
+import {
+  NumberParam,
+  NumericArrayParam,
+  withDefault,
+} from 'serialize-query-params';
 import { Link } from 'react-router-dom';
 import { Links } from './Links';
 
 export const ArrayParamPage = () => {
   const [queryParams, setQueryParams] = useQueryParams({
-    id: NumberParam,
+    id: withDefault(NumberParam, 1),
     ids: NumericArrayParam,
   });
   return (

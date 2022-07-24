@@ -60,7 +60,11 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
             else searchParamsRef.current.append(key, v);
           });
         } else {
-          searchParamsRef.current.set(key, keyValue);
+          if (keyValue === undefined || keyValue === null) {
+            searchParamsRef.current.delete(key);
+          } else {
+            searchParamsRef.current.set(key, keyValue);
+          }
         }
       });
 

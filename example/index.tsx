@@ -6,6 +6,7 @@ import { ProductPage } from './ProductPage';
 import { ArrayParamPage } from './ArrayParamPage';
 import { IndexPage } from './IndexPage';
 import { Links } from './Links';
+import { TestPage } from './TestPage';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
       <Routes>
         <Route path={Links.Product.route} element={<ProductPage />} />
         <Route path={Links.Array.route} element={<ArrayParamPage />} />
+        <Route path={Links.Test.route} element={<TestPage />} />
         <Route path={'*'} element={<IndexPage />} />
       </Routes>
     </BrowserRouter>

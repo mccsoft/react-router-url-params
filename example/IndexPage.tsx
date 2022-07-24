@@ -13,6 +13,9 @@ export const IndexPage = () => {
       <div>
         <Link to={Links.Array.link(undefined, { qwe: 2 })}>Array</Link>
       </div>
+      <div>
+        <Link to={Links.Test.link()}>Test</Link>
+      </div>
     </div>
   );
 };
