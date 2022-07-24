@@ -57,7 +57,6 @@ export function createRoute<
       let result = generatePath(pattern, encodedParams as any);
       if (search) {
         result = result + '?' + createSearchParams(search as any);
-        console.log('qwe', result);
       }
       return result.replace('*', '');
     }) as any,
