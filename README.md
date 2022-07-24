@@ -61,8 +61,9 @@ Original API of `useQueryParams` and `useQueryParam` is preserved (and even [ser
 The only change is that we are using [useSearchParams](https://reactrouter.com/docs/en/v6/hooks/use-search-params) of react-router to get and set query parameters.
 Also, you don't need to wrap your app in `<QueryParamProvider></QueryParamProvider>`, because we are tied to react-router API.
 
-Since the API is the same, you could check the [original docs](https://github.com/pbeshai/use-query-params/tree/master/packages/use-query-params) or [original demo](https://pbeshai.github.io/use-query-params/) (all credits go to [pbeshai](https://github.com/pbeshai/). 
+Since the API is the same, you could check the [original docs](https://github.com/pbeshai/use-query-params/tree/master/packages/use-query-params) or [original demo](https://pbeshai.github.io/use-query-params/) (all credits go to [pbeshai](https://github.com/pbeshai/)). 
 I'm copying a part of original API description here for clarity:
+
 **Example**
 
 ```ts
