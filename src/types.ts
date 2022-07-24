@@ -20,7 +20,7 @@ export declare type ParamsFunctionType<
       params: DecodedValueMapInLink<ParamsConfig, ParamKey>,
       search?: URLSearchParamsInit,
     ) => string
-  : (params?: undefined, search?: URLSearchParamsInit) => string;
+  : (search?: URLSearchParamsInit) => string;
 
 export declare type ParamTypes<ParamKey extends string = string> = {
   readonly [key in ParamKey]?: QueryParamConfig<any, any>;

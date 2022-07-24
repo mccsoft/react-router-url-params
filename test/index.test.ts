@@ -44,4 +44,16 @@ describe('strongly typed links', () => {
     const result = link.link({ id: '123' });
     expect(result).toStrictEqual('/products/123');
   });
+
+  it('link - search params', () => {
+    const link = createRoute('/products/:id');
+    const result = link.link({ id: '123' }, { asd: 'qwe' });
+    expect(result).toStrictEqual('/products/123?asd=qwe');
+  });
+
+  it('link - search params without url params', () => {
+    const link = createRoute('/products');
+    const result = link.link({ asd: 'qwe' });
+    expect(result).toStrictEqual('/products?asd=qwe');
+  });
 });

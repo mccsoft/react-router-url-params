@@ -55,6 +55,9 @@ export function createRoute<
         ? encodeQueryParams(paramTypes as any, params as any)
         : params;
       let result = generatePath(pattern, encodedParams as any);
+      if (!pattern.includes(':')) {
+        search = params;
+      }
       if (search) {
         result = result + '?' + createSearchParams(search as any);
       }
