@@ -1,0 +1,54 @@
+{
+  "name": "react-router-url-params",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": "Artur Drobinskiy",
+  "main": "dist/index.js",
+  "module": "dist/react-router-url-params.esm.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "analyze": "size-limit --why",
+    "build": "dts build",
+    "build-storybook": "build-storybook",
+    "lint": "dts lint",
+    "prepare": "dts build",
+    "size": "size-limit",
+    "start": "dts watch",
+    "storybook": "start-storybook -p 6006",
+    "test": "dts test --passWithNoTests"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "dts lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "jest": {
+    "testEnvironment": "jsdom"
+  },
+  "peerDependencies": {
+    "react": ">=16"
+  },
+  "engines": {
+    "node": ">=12"
+  },
+  "size-limit": [
+    {
+      "path": "dist/react-router-url-params.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/react-router-url-params.esm.js",
+      "limit": "10 KB"
+    }
+  ]
+}
