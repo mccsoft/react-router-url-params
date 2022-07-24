@@ -9,11 +9,16 @@
     "build": "vite build"
   },
   "dependencies": {
-    "react-app-polyfill": "^3.0.0"
+    "react-app-polyfill": "^3.0.0",
+    "query-string": "5.1.1",
+    "react-router": "6.3.0",
+    "react-router-dom": "6.3.0"
   },
   "alias": {
     "react": "../node_modules/react",
     "react-dom": "../node_modules/react-dom/profiling",
+    "react-router": "../node_modules/react-router",
+    "react-router-dom": "../node_modules/react-router-dom",
     "scheduler/tracing": "../node_modules/scheduler/tracing-profiling"
   },
   "devDependencies": {
