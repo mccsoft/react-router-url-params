@@ -1,11 +1,28 @@
 {
   "name": "react-router-url-params",
   "version": "0.3.1",
+  "description": "Strongly-typed way to manage URL parameters in react-router",
+  "homepage": "https://github.com/mcctomsk/react-router-url-params#readme",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mcctomsk/react-router-url-params.git"
+  },
   "license": "MIT",
   "author": "Artur Drobinskiy",
   "main": "dist/index.js",
   "module": "dist/react-router-url-params.esm.js",
   "typings": "dist/index.d.ts",
+  "keywords": [
+    "react",
+    "react-router",
+    "url",
+    "query",
+    "parameters",
+    "hook",
+    "hooks",
+    "query param",
+    "react use"
+  ],
   "files": [
     "dist",
     "src"
