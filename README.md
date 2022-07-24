@@ -4,8 +4,8 @@
 [![MIT](https://img.shields.io/dub/l/vibe-d.svg)](https://opensource.org/licenses/MIT)
 ![Types - TypeScript](https://img.shields.io/npm/types/typescript?style=flat)
 
-Strongly-typed way to manage your URL parameters. Works with [react-router](https://reactrouter.com/docs/en/v6/getting-started/overview).
-Allows to type parameters in [routes](#createroute) and [search](#usequeryparams).
+Strongly-typed way to manage URL parameters. Works with [react-router](https://reactrouter.com/docs/en/v6/getting-started/overview).
+Allows to strong-type parameters in [routes](#createroute) and [search](#usequeryparams).
 
 
 ## Installation
@@ -35,16 +35,16 @@ productPageRoute.link({id: 123}); // gives you /products/123
 ```
 2. Read parameter values inside your page (useParams hook with types)
 ```tsx
-const params = productPageRoute.useParams(); // gives you: { id: 123 }
+const params = productPageRoute.useParams(); // gives you { id: 123 } with correct Typescript types
 ```
 
 3. Match url inside your page (useMatch hook with types)
 ```tsx
-const match = productPageRoute.useMatch(); // gives you: { params: { id: 123 }, pathname: '/products/123', pattern: '/products/:id' } 
+const match = productPageRoute.useMatch(); // gives you: { params: { id: 123 }, pathname: '/products/123', pattern: '/products/:id' } with correct Typescript types 
 ```
 4. Match url from arbitrary place (not a hook)
 ```tsx
-const matchAnywhere = productPageRoute.matchPath(window.location.pathname); // gives you: { params: { id: 123 }, pathname: '/products/123', pattern: '/products/:id' }
+const matchAnywhere = productPageRoute.matchPath(window.location.pathname); // gives you: { params: { id: 123 }, pathname: '/products/123', pattern: '/products/:id' } with correct Typescript types
 ```
 5. Use it in your Routes configuration:
 ```tsx
