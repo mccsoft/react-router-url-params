@@ -1,3 +1,5 @@
+export * from 'serialize-query-params';
+// @ts-ignore
 export * from './types';
 import { useQueryParams, useQueryParam } from './useQueryParams';
 import { createRoute } from './create-route';
