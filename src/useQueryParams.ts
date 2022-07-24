@@ -75,7 +75,15 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
   );
 };
 
-export declare type SetValue<D> = (newValue: NewValueType<D>) => void;
+export declare type SetValue<D> = (
+  newValue: NewValueType<D>,
+  navigateOptions?:
+    | {
+        replace?: boolean | undefined;
+        state?: any;
+      }
+    | undefined
+) => void;
 
 /**
  * Helper to get the latest decoded value with smart caching.
@@ -88,8 +96,8 @@ export const useQueryParam = <D, D2 = D>(
   const [queryParams, setQueryParams] = useQueryParams({
     [name]: paramConfig,
   });
-  const setValue: SetValue<D> = useCallback((value) => {
-    setQueryParams({ [name]: value } as any);
+  const setValue: SetValue<D> = useCallback((value, navigateOptions) => {
+    setQueryParams({ [name]: value } as any, navigateOptions);
   }, []);
   return useMemo(
     () => [queryParams[name], setValue],

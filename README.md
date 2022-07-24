@@ -1,181 +1,107 @@
-# DTS React w/ Storybook User Guide
+# react-router-url-params
+[![npm version](https://badge.fury.io/js/react-router-url-params.svg)](https://www.npmjs.org/package/react-router-url-params)
+[![npm](https://img.shields.io/npm/dt/react-router-url-params.svg)](https://www.npmjs.org/package/react-router-url-params)
+[![MIT](https://img.shields.io/dub/l/vibe-d.svg)](https://opensource.org/licenses/MIT)
+![Types - TypeScript](https://img.shields.io/npm/types/typescript?style=flat)
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with DTS. Let’s get you oriented with what’s here and how to use it.
+Strongly-typed way to manage your URL parameters. Works with [react-router](https://reactrouter.com/docs/en/v6/getting-started/overview).
+Allows to type parameters in [routes](#createroute) and [search](#usequeryparams).
 
-> This DTS setup is meant for developing React component libraries (not apps!) that can be published to NPM. If you’re looking to build a React-based app, you should use `create-react-app`, `razzle`, `nextjs`, `gatsby`, or `react-static`.
 
-> If you’re new to TypeScript and React, checkout [this handy cheatsheet](https://github.com/sw-yx/react-typescript-cheatsheet/)
+## Installation
+```
+yarn add react-router-url-params query-string
+```
+It's implied, that you have `react-router` and `react-router-dom` installed.
 
-## Commands
+After that you could start using the `createRoute` and `useQueryParams`.
 
-DTS scaffolds your new library inside `/src`, and also sets up a [Vite-based](https://vitejs.dev) playground for it inside `/example`.
+## createRoute
+Create the route once, use it everywhere!
 
-The recommended workflow is to run DTS in one terminal:
+Just pass you URL pattern to createRoute function:
+```tsx
+const productPageRoute = createRoute('/products/:id');
+```
+optionally you could specify a type for the parameters
+```tsx
+const productPageRoute = createRoute('/products/:id', {id: RequiredNumberParam});
+```
+After that you could use it to
 
-```bash
-npm start # or yarn start
+1. Generate a link to that page
+```tsx
+productPageRoute.link({id: 123}); // gives you /products/123
+```
+2. Read parameter values inside your page (useParams hook with types)
+```tsx
+const params = productPageRoute.useParams(); // gives you: { id: 123 }
 ```
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
-
-Then run either Storybook or the example playground:
-
-### Storybook
-
-Run inside another terminal:
-
-```bash
-yarn storybook
+3. Match url inside your page (useMatch hook with types)
+```tsx
+const match = productPageRoute.useMatch(); // gives you: { params: { id: 123 }, pathname: '/products/123', pattern: '/products/:id' } 
+```
+4. Match url from arbitrary place (not a hook)
+```tsx
+const matchAnywhere = productPageRoute.matchPath(window.location.pathname); // gives you: { params: { id: 123 }, pathname: '/products/123', pattern: '/products/:id' }
+```
+5. Use it in your Routes configuration:
+```tsx
+<Routes>
+  <Route path={productPageRoute.route} element={/*your component here*/}/>
+</Routes>
 ```
 
-This loads the stories from `./stories`.
 
-> NOTE: Stories should reference the components as if using the library, similar to the example playground. This means importing from the root project directory. This has been aliased in the tsconfig and the storybook webpack config as a helper.
+## useQueryParams
+This is a port of [use-query-params](https://github.com/pbeshai/use-query-params) to react-router-v6.
+Original API of `useQueryParams` and `useQueryParam` is preserved (and even [serialization engine](https://github.com/pbeshai/use-query-params/tree/master/packages/serialize-query-params) is reused).
 
-### Example
+The only change is that we are using [useSearchParams](https://reactrouter.com/docs/en/v6/hooks/use-search-params) of react-router to get and set query parameters.
+Also, you don't need to wrap your app in `<QueryParamProvider></QueryParamProvider>`, because we are tied to react-router API.
 
-Then run the example inside another:
+Since the API is the same, you could check the [original docs](https://github.com/pbeshai/use-query-params/tree/master/packages/use-query-params) or [original demo](https://pbeshai.github.io/use-query-params/) (all credits go to [pbeshai](https://github.com/pbeshai/). 
+I'm copying a part of original API description here for clarity:
+**Example**
 
-```bash
-cd example
-npm i # or yarn to install dependencies
-npm start # or yarn start
+```ts
+import { useQueryParams, StringParam, NumberParam } from 'react-router-url-params';
+
+// reads query parameters `foo` and `bar` from the URL and stores their decoded values
+const [query, setQuery] = useQueryParams({ foo: NumberParam, bar: StringParam });
+setQuery({ foo: 500 })
+setQuery({ foo: 123, bar: 'zzz' }, { replace: true });
+
+// to unset or remove a parameter set it to undefined and use pushIn or replaceIn update types
+setQuery({ foo: undefined }) // ?foo=123&bar=zzz becomes ?bar=zzz
+
+// functional updates are also supported: this one is not supported yet
+//setQuery((latestQuery) => ({ foo: latestQuery.foo + 150 }))
 ```
 
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure DTS is running in watch mode like we recommend above.
 
-To do a one-off build, use `npm run build` or `yarn build`.
+#### Param Types
+See [all param definitions from serialize-query-params](https://github.com/pbeshai/use-query-params/tree/master/packages/serialize-query-params#readme). You can define your own parameter types by creating an object with an `encode` and a `decode` function. See the existing definitions for examples.
 
-To run tests, use `npm test` or `yarn test`.
+Examples in this table assume query parameter named `qp`.
 
-## Configuration
+| Param | Type | Example Decoded | Example Encoded |
+| --- | --- | --- | --- |
+| StringParam | string | `'foo'` | `?qp=foo` |
+| NumberParam | number | `123` | `?qp=123` |
+| ObjectParam | { key: string } | `{ foo: 'bar', baz: 'zzz' }` | `?qp=foo-bar_baz-zzz` |
+| ArrayParam | string[] | `['a','b','c']` | `?qp=a&qp=b&qp=c` |
+| JsonParam | any | `{ foo: 'bar' }` | `?qp=%7B%22foo%22%3A%22bar%22%7D` |
+| DateParam | Date | `Date(2019, 2, 1)` | `?qp=2019-03-01` |
+| BooleanParam | boolean | `true` | `?qp=1` |
+| NumericObjectParam | { key: number } | `{ foo: 1, bar: 2 }` | `?qp=foo-1_bar-2` |
+| DelimitedArrayParam | string[] | `['a','b','c']` | `?qp=a_b_c` |
+| DelimitedNumericArrayParam | number[] | `[1, 2, 3]` | `?qp=1_2_3` |
 
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
 
-### Jest
 
-Jest tests are set up to run with `npm test` or `yarn test`.
+## Contributions and support
+Issues and Pull Requests are welcome.
 
-### Bundle analysis
-
-Calculates the real cost of your library using [size-limit](https://github.com/ai/size-limit) with `npm run size` and visulize it with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/example
-  index.html
-  index.tsx       # test your component here in a demo app
-  package.json
-  tsconfig.json
-/src
-  index.tsx       # EDIT THIS
-/test
-  index.test.tsx  # EDIT THIS
-/stories
-  Thing.stories.tsx # EDIT THIS
-/.storybook
-  main.js
-  preview.js
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
-```
-
-#### React Testing Library
-
-We do not set up `react-testing-library` for you yet, we welcome contributions and documentation on this.
-
-### Rollup
-
-DTS uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
-
-### TypeScript
-
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
-
-## Continuous Integration
-
-### GitHub Actions
-
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [size-limit](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `dts` [optimizations docs](https://github.com/weiran-zsd/dts-cli#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
-```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
-}
-```
-
-You can also choose to install and use [invariant](https://github.com/weiran-zsd/dts-cli#invariant) and [warning](https://github.com/weiran-zsd/dts-cli#warning) functions.
-
-## Module Formats
-
-CJS, ESModules, and UMD module formats are supported.
-
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
-
-## Deploying the Example Playground
-
-The Playground is just a simple [Vite](https://vitejs.dev) app, you can deploy it anywhere you would normally deploy that. Here are some guidelines for **manually** deploying with the Netlify CLI (`npm i -g netlify-cli`):
-
-```bash
-cd example # if not already in the example folder
-npm run build # builds to dist
-netlify deploy # deploy the dist folder
-```
-
-Alternatively, if you already have a git repo connected, you can set up continuous deployment with Netlify:
-
-```bash
-netlify init
-# build command: yarn build && cd example && yarn && yarn build
-# directory to deploy: example/dist
-# pick yes for netlify.toml
-```
-
-## Named Exports
-
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
-
-## Including Styles
-
-There are many ways to ship styles, including with CSS-in-JS. DTS has no opinion on this, configure how you like.
-
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
-
-## Publishing to NPM
-
-We recommend using [np](https://github.com/sindresorhus/np).
-
-## Usage with Lerna
-
-When creating a new package with DTS within a project set up with Lerna, you might encounter a `Cannot resolve dependency` error when trying to run the `example` project. To fix that you will need to make changes to the `package.json` file _inside the `example` directory_.
-
-The problem is that due to the nature of how dependencies are installed in Lerna projects, the aliases in the example project's `package.json` might not point to the right place, as those dependencies might have been installed in the root of your Lerna project.
-
-Change the `alias` to point to where those packages are actually installed. This depends on the directory structure of your Lerna project, so the actual path might be different from the diff below.
-
-```diff
-   "alias": {
--    "react": "../node_modules/react",
--    "react-dom": "../node_modules/react-dom"
-+    "react": "../../../node_modules/react",
-+    "react-dom": "../../../node_modules/react-dom"
-   },
-```
-
-An alternative to fixing this problem would be to remove aliases altogether and define the dependencies referenced as aliases as dev dependencies instead. [However, that might cause other problems.](https://github.com/palmerhq/tsdx/issues/64)
+For any kind of private consulting or support you could contact [Artur Drobinskiy](https://github.com/Shaddix) directly via email.
