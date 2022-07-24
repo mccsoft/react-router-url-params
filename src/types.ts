@@ -14,11 +14,11 @@ export declare type URLSearchParamsInit =
 export declare type ParamsFunctionType<
   Path extends string,
   ParamsConfig extends ParamTypes<ParamKey>,
-  ParamKey extends string
+  ParamKey extends string,
 > = Path extends `${infer Start}:${infer End}`
   ? (
       params: DecodedValueMapInLink<ParamsConfig, ParamKey>,
-      search?: URLSearchParamsInit
+      search?: URLSearchParamsInit,
     ) => string
   : (params?: undefined, search?: URLSearchParamsInit) => string;
 
@@ -28,7 +28,7 @@ export declare type ParamTypes<ParamKey extends string = string> = {
 
 export declare type DecodedValueMap<
   ParamsMap extends ParamTypes<ParamKey>,
-  ParamKey extends string = string
+  ParamKey extends string = string,
 > = {
   [P in ParamKey]: ParamsMap[P] extends QueryParamConfig<any, any>
     ? ReturnType<ParamsMap[P]['decode']>
@@ -37,7 +37,7 @@ export declare type DecodedValueMap<
 
 export declare type DecodedValueMapInLink<
   ParamsMap extends ParamTypes<ParamKey>,
-  ParamKey extends string = string
+  ParamKey extends string = string,
 > = {
   [P in ParamKey]: ParamsMap[P] extends QueryParamConfig<any, any>
     ? ReturnType<ParamsMap[P]['decode']>
@@ -46,7 +46,7 @@ export declare type DecodedValueMapInLink<
 
 export declare type TypedPathMatch<
   ParamsMap extends ParamTypes<ParamKey>,
-  ParamKey extends string = string
+  ParamKey extends string = string,
 > = Omit<PathMatch<ParamKey>, 'params'> & {
   /**
    * The names and values of dynamic parameters in the URL.

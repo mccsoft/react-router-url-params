@@ -20,7 +20,7 @@ export type SetQueryLocal<QPCMap extends QueryParamConfigMap> = (
         replace?: boolean | undefined;
         state?: any;
       }
-    | undefined
+    | undefined,
 ) => void;
 
 /**
@@ -28,7 +28,7 @@ export type SetQueryLocal<QPCMap extends QueryParamConfigMap> = (
  * return an object with the decoded values and a setter for updating them.
  */
 export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
-  paramConfigMap: QPCMap
+  paramConfigMap: QPCMap,
 ): [DecodedValueMap<QPCMap>, SetQueryLocal<QPCMap>] => {
   const paramConfigMapRef = useRef(paramConfigMap);
   paramConfigMap = shallowEqual(paramConfigMap, paramConfigMapRef.current)
@@ -70,12 +70,12 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
 
       setSearchParams(searchParamsRef.current, navigateOptions);
     },
-    [paramConfigMap, setSearchParams]
+    [paramConfigMap, setSearchParams],
   );
 
   return useMemo(
     () => [result as any, setValue],
-    [searchParamsStringified, setValue]
+    [searchParamsStringified, setValue],
   );
 };
 
@@ -86,7 +86,7 @@ export declare type SetValue<D> = (
         replace?: boolean | undefined;
         state?: any;
       }
-    | undefined
+    | undefined,
 ) => void;
 
 /**
@@ -95,7 +95,7 @@ export declare type SetValue<D> = (
  */
 export const useQueryParam = <D, D2 = D>(
   name: string,
-  paramConfig: QueryParamConfig<D, D2> = StringParam as QueryParamConfig<any>
+  paramConfig: QueryParamConfig<D, D2> = StringParam as QueryParamConfig<any>,
 ): [D2, SetValue<D>] => {
   const [queryParams, setQueryParams] = useQueryParams({
     [name]: paramConfig,
@@ -105,6 +105,6 @@ export const useQueryParam = <D, D2 = D>(
   }, []);
   return useMemo(
     () => [queryParams[name], setValue],
-    [queryParams[name], setValue]
+    [queryParams[name], setValue],
   );
 };

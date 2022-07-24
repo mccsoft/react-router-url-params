@@ -14,10 +14,10 @@ import {
 export function createRoute<
   ParamKey extends ParamParseKey<Path>,
   Path extends string,
-  ParamsConfig extends ParamTypes<ParamKey>
+  ParamsConfig extends ParamTypes<ParamKey>,
 >(
   pattern: Path,
-  paramTypes?: ParamsConfig
+  paramTypes?: ParamsConfig,
 ): {
   /*
    * Use this to create link to certain page from another page, e.g. <Link to={Links.Authorized.ProductDetails({id:123})}>link</Link>
@@ -49,7 +49,7 @@ export function createRoute<
     pattern: pattern,
     link: ((
       params?: Params<ParamKey> | undefined,
-      search?: URLSearchParamsInit
+      search?: URLSearchParamsInit,
     ) => {
       const encodedParams = paramTypes
         ? encodeQueryParams(paramTypes as any, params as any)
@@ -75,7 +75,7 @@ export function createRoute<
         if (paramTypes)
           match.params = decodeQueryParams(
             paramTypes as any,
-            match.params
+            match.params,
           ) as any;
       }
       return match as any;
@@ -87,7 +87,7 @@ export function createRoute<
         if (paramTypes)
           match.params = decodeQueryParams(
             paramTypes as any,
-            match.params as any
+            match.params as any,
           ) as any;
       }
       return match as any;
