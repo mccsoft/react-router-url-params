@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "start": "cd example && yarn start",
-    "do-publish": "yarn build && yarn publish",
+    "do-publish": "yarn test && yarn publish",
     "build": "dts build",
     "analyze": "size-limit --why",
     "build-storybook": "build-storybook",
