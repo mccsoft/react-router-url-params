@@ -16,6 +16,12 @@ import {
 import { QueryParamConfigMap } from 'serialize-query-params/lib/types';
 import { useQueryParams } from './useQueryParams';
 
+/**
+ *  Generates various hooks and helpers based on URL pattern and optional parameter types.
+ *  @param {string} pattern - the URL pattern (e.g. '/products/:id').
+ *  @param {any} urlParamsConfig - object that specifies the types of URL parameters in a pattern (e.g. { id: RequiredNumberParam })
+ *  @param {any} searchParamsConfig - object that specifies the types of Search (i.e. ?name=flower&color=yellow) parameters (e.g. { name: StringParam })
+ */
 export function createRoute<
   ParamKey extends ParamParseKey<Path>,
   Path extends string,
