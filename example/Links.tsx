@@ -13,9 +13,13 @@ export const Links = {
       nmb: NumberParam,
     },
   ),
-  UseQueryParamsWithoutParameterInUrl: createRoute('/useQueryParams2', {
-    str: StringParam,
-    nmb: NumberParam,
-  }),
+  UseQueryParamsWithoutParameterInUrl: createRoute(
+    '/useQueryParams2',
+    undefined,
+    {
+      str: StringParam,
+      nmb: NumberParam,
+    },
+  ),
   Index: createRoute('/'),
 };

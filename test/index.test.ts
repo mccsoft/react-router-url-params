@@ -53,7 +53,7 @@ describe('strongly typed links', () => {
   });
 
   it('link - search params without url params', () => {
-    const link = createRoute('/products', { zxc: StringParam });
+    const link = createRoute('/products', undefined, { zxc: StringParam });
     const result = link.link({ zxc: 'qwe' });
     expect(result).toStrictEqual('/products?zxc=qwe');
   });
@@ -77,10 +77,16 @@ describe('strongly typed links', () => {
       { id: RequiredNumberParam },
       { q: NumberParam },
     );
+    // const link3 = createRoute(
+    //   '/products',
+    //   { id: NumberParam },
+    //   { q: NumberParam },
+    // );
+    // link.link();
     // link.link();
     // link.link({});
     // link.link({ zxc: 123 });
     // link.link({ id: '123' });
-    // link2.useParams().queryParams.qw
+    // link2.useParams().queryParams.qw;
   });
 });

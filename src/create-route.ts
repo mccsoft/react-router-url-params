@@ -23,37 +23,10 @@ export function createRoute<
   SearchParams extends QueryParamConfigMap,
 >(
   pattern: Path,
-  searchParams?: Path extends `${infer Start}:${infer End}`
-    ? never
-    : SearchParams,
-): CreateRouteResult<ParamKey, Path, ParamsConfig, SearchParams>;
-export function createRoute<
-  ParamKey extends ParamParseKey<Path>,
-  Path extends string,
-  ParamsConfig extends ParamTypes<ParamKey>,
-  SearchParams extends QueryParamConfigMap,
->(
-  pattern: Path,
-  urlParams?: Path extends `${infer Start}:${infer End}`
-    ? ParamsConfig
-    : SearchParams,
-  searchParams?: Path extends `${infer Start}:${infer End}`
-    ? SearchParams
-    : never,
-): CreateRouteResult<ParamKey, Path, ParamsConfig, SearchParams>;
-export function createRoute<
-  ParamKey extends ParamParseKey<Path>,
-  Path extends string,
-  ParamsConfig extends ParamTypes<ParamKey>,
-  SearchParams extends QueryParamConfigMap,
->(
-  pattern: Path,
   urlParamsConfig?: Path extends `${infer Start}:${infer End}`
     ? ParamsConfig
-    : SearchParams,
-  searchParamsConfig?: Path extends `${infer Start}:${infer End}`
-    ? SearchParams
-    : never,
+    : undefined,
+  searchParamsConfig?: SearchParams,
 ): CreateRouteResult<ParamKey, Path, ParamsConfig, SearchParams> {
   return {
     route: (pattern as any)?.toString(),
@@ -64,14 +37,8 @@ export function createRoute<
     ) => {
       const realUrlParams = pattern.includes(':') ? params : null;
       const realSearchParams = pattern.includes(':') ? search : params;
-      const realUrlParamsConfig = pattern.includes(':')
-        ? urlParamsConfig
-        : null;
-      const realSearchParamsConfig = pattern.includes(':')
-        ? urlParamsConfig!
-        : searchParamsConfig!;
-      const encodedParams = realUrlParamsConfig
-        ? encodeQueryParams(realUrlParamsConfig as any, realUrlParams as any)
+      const encodedParams = urlParamsConfig
+        ? encodeQueryParams(urlParamsConfig as any, realUrlParams as any)
         : realUrlParams;
 
       let result = generatePath(pattern, encodedParams as any);
@@ -81,9 +48,9 @@ export function createRoute<
           result +
           '?' +
           createSearchParams(
-            realSearchParamsConfig
+            searchParamsConfig
               ? encodeQueryParams(
-                  realSearchParamsConfig as any,
+                  searchParamsConfig as any,
                   realSearchParams as any,
                 )
               : (realSearchParams as any),
@@ -93,16 +60,8 @@ export function createRoute<
     }) as any,
     useParams: () => {
       let params = useParams() as any;
-      const realSearchParamsConfig = pattern.includes(':')
-        ? searchParamsConfig!
-        : urlParamsConfig!;
-      const realUrlParamsConfig = pattern.includes(':')
-        ? urlParamsConfig
-        : null;
-      const [queryParams, setQueryParams] = useQueryParams(
-        realSearchParamsConfig,
-      );
-      if (realUrlParamsConfig) {
+      const [queryParams, setQueryParams] = useQueryParams(searchParamsConfig!);
+      if (urlParamsConfig) {
         params = decodeQueryParams(
           urlParamsConfig as any,
           params as any,
