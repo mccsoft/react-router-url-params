@@ -21,7 +21,7 @@ export declare type ParamsFunctionType<
   ParamsConfig extends ParamTypes<ParamKey>,
   ParamKey extends string,
   QPCMap extends QueryParamConfigMap,
-> = Path extends `${infer Start}:${infer End}`
+> = Path extends `${string}:${string}`
   ? (
       params: DecodedValueMapInLink<ParamsConfig, ParamKey>,
       search?: QPCMap | URLSearchParamsInit,

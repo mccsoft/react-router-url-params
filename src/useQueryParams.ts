@@ -36,8 +36,6 @@ const useQueryParamsDefaultResult = [{}, () => {}];
 export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
   paramConfigMap: QPCMap,
 ): [DecodedValueMap<QPCMap>, SetQueryLocal<QPCMap>] => {
-  if (paramConfigMap === undefined || paramConfigMap === null)
-    return useQueryParamsDefaultResult as any;
   const paramConfigMapRef = useRef(paramConfigMap);
   paramConfigMap = shallowEqual(paramConfigMap, paramConfigMapRef.current)
     ? paramConfigMapRef.current
@@ -51,10 +49,13 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
 
   const result = useMemo(() => {
     const value: Record<keyof QPCMap, string> = {} as any;
-    Object.keys(paramConfigMap).forEach((key) => {
-      (value as any)[key] = searchParams.getAll(key);
-    });
-    return decodeQueryParams(paramConfigMap, value);
+    if (paramConfigMap) {
+      Object.keys(paramConfigMap).forEach((key) => {
+        (value as any)[key] = searchParams.getAll(key);
+      });
+      return decodeQueryParams(paramConfigMap, value);
+    }
+    return {};
   }, [searchParamsStringified]);
   const resultRef = useRef(result);
   resultRef.current = result;
@@ -88,7 +89,10 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
   );
 
   return useMemo(
-    () => [result as any, setValue],
+    () =>
+      paramConfigMap === null || paramConfigMap === undefined
+        ? (useQueryParamsDefaultResult as any)
+        : [result as any, setValue],
     [searchParamsStringified, setValue],
   );
 };

@@ -29,7 +29,7 @@ export function createRoute<
   SearchParams extends QueryParamConfigMap,
 >(
   pattern: Path,
-  urlParamsConfig?: Path extends `${infer Start}:${infer End}`
+  urlParamsConfig?: Path extends `${string}:${string}`
     ? ParamsConfig
     : undefined,
   searchParamsConfig?: SearchParams,
