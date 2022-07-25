@@ -3,26 +3,33 @@ import { generatePath, matchPath, useMatch, useParams } from 'react-router-dom';
 import { createSearchParams } from 'react-router-dom';
 import { decodeQueryParams, encodeQueryParams } from 'serialize-query-params';
 import {
-  DecodedValueMap,
+  DecodedValueMapPartial,
   Params,
   ParamsFunctionType,
   ParamTypes,
   TypedPathMatch,
   URLSearchParamsInit,
 } from './types';
+import {
+  DecodedValueMap,
+  QueryParamConfigMap,
+} from 'serialize-query-params/lib/types';
+import { SetQueryLocal, useQueryParams } from './useQueryParams';
 
 export function createRoute<
   ParamKey extends ParamParseKey<Path>,
   Path extends string,
   ParamsConfig extends ParamTypes<ParamKey>,
+  SearchParams extends QueryParamConfigMap,
 >(
   pattern: Path,
   paramTypes?: ParamsConfig,
+  searchParams?: SearchParams,
 ): {
   /*
    * Use this to create link to certain page from another page, e.g. <Link to={Links.Authorized.ProductDetails({id:123})}>link</Link>
    */
-  link: ParamsFunctionType<Path, ParamsConfig, ParamKey>;
+  link: ParamsFunctionType<Path, ParamsConfig, ParamKey, SearchParams>;
   /*
    * Use this when configuring routes, e.g. <Route path={Links.Authorized.ProductDetails.route} element={<ProductDetailsPage />} />
    */
@@ -34,7 +41,10 @@ export function createRoute<
   /*
    * Use this as a strong-type replacement of useParams for the route
    */
-  useParams: () => DecodedValueMap<ParamsConfig, ParamKey>;
+  useParams: () => DecodedValueMapPartial<ParamsConfig, ParamKey> & {
+    queryParams: DecodedValueMap<SearchParams>;
+    setQueryParams: SetQueryLocal<SearchParams>;
+  };
   /*
    * Use this as a strong-type replacement of useMatch for the route
    */
@@ -64,11 +74,14 @@ export function createRoute<
       return result.replace('*', '');
     }) as any,
     useParams: () => {
-      const params = useParams();
+      let params = useParams() as any;
+      const [queryParams, setQueryParams] = useQueryParams(searchParams!);
       if (paramTypes) {
-        return decodeQueryParams(paramTypes as any, params as any) as any;
+        params = decodeQueryParams(paramTypes as any, params as any) as any;
       }
-      return params as any;
+      params.queryParams = queryParams;
+      params.setQueryParams = setQueryParams;
+      return params;
     },
     useMatch: () => {
       const match = useMatch(pattern);

@@ -1,4 +1,7 @@
-import { QueryParamConfig } from 'serialize-query-params/lib/types';
+import {
+  QueryParamConfig,
+  QueryParamConfigMap,
+} from 'serialize-query-params/lib/types';
 import { PathMatch } from 'react-router/lib/router';
 
 export declare type Params<Key extends string = string> = {
@@ -15,18 +18,19 @@ export declare type ParamsFunctionType<
   Path extends string,
   ParamsConfig extends ParamTypes<ParamKey>,
   ParamKey extends string,
+  QPCMap extends QueryParamConfigMap,
 > = Path extends `${infer Start}:${infer End}`
   ? (
       params: DecodedValueMapInLink<ParamsConfig, ParamKey>,
-      search?: URLSearchParamsInit,
+      search?: QPCMap | URLSearchParamsInit,
     ) => string
-  : (search?: URLSearchParamsInit) => string;
+  : (search?: QPCMap | URLSearchParamsInit) => string;
 
 export declare type ParamTypes<ParamKey extends string = string> = {
   readonly [key in ParamKey]?: QueryParamConfig<any, any>;
 };
 
-export declare type DecodedValueMap<
+export declare type DecodedValueMapPartial<
   ParamsMap extends ParamTypes<ParamKey>,
   ParamKey extends string = string,
 > = {
@@ -51,5 +55,5 @@ export declare type TypedPathMatch<
   /**
    * The names and values of dynamic parameters in the URL.
    */
-  params: DecodedValueMap<ParamsMap, ParamKey>;
+  params: DecodedValueMapPartial<ParamsMap, ParamKey>;
 };

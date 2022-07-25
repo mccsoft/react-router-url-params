@@ -27,6 +27,8 @@ export type SetQueryLocal<QPCMap extends QueryParamConfigMap> = (
     | undefined,
 ) => void;
 
+const useQueryParamsDefaultResult = [{}, () => {}];
+
 /**
  * Given a query parameter configuration (mapping query param name to { encode, decode }),
  * return an object with the decoded values and a setter for updating them.
@@ -34,6 +36,8 @@ export type SetQueryLocal<QPCMap extends QueryParamConfigMap> = (
 export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
   paramConfigMap: QPCMap,
 ): [DecodedValueMap<QPCMap>, SetQueryLocal<QPCMap>] => {
+  if (paramConfigMap === undefined || paramConfigMap === null)
+    return useQueryParamsDefaultResult as any;
   const paramConfigMapRef = useRef(paramConfigMap);
   paramConfigMap = shallowEqual(paramConfigMap, paramConfigMapRef.current)
     ? paramConfigMapRef.current

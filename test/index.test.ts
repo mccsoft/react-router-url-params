@@ -1,4 +1,5 @@
 import { createRoute, RequiredNumberParam } from '../src';
+import { NumberParam, StringParam } from 'serialize-query-params';
 
 describe('strongly typed links', () => {
   it('matchPath - number', () => {
@@ -52,8 +53,34 @@ describe('strongly typed links', () => {
   });
 
   it('link - search params without url params', () => {
-    const link = createRoute('/products');
-    const result = link.link({ asd: 'qwe' });
-    expect(result).toStrictEqual('/products?asd=qwe');
+    const link = createRoute('/products', undefined, { zxc: StringParam });
+    const result = link.link({ zxc: 'qwe' });
+    expect(result).toStrictEqual('/products?zxc=qwe');
+  });
+
+  it('link - typed search params, url with parameter', () => {
+    const link = createRoute(
+      '/products/:id',
+      { id: RequiredNumberParam },
+      { zxc: StringParam },
+    );
+    const result = link.link({ id: 123 }, { zxc: 'hh' });
+    expect(result).toStrictEqual('/products/123?zxc=hh');
+  });
+
+  it('the following lines should give typescript errors', () => {
+    // noinspection JSUnusedLocalSymbols
+    const link = createRoute('/products/:id', { id: RequiredNumberParam });
+    // noinspection JSUnusedLocalSymbols
+    const link2 = createRoute(
+      '/products/:id',
+      { id: RequiredNumberParam },
+      { q: NumberParam },
+    );
+    // link.link();
+    // link.link({});
+    // link.link({ zxc: 123 });
+    // link.link({ id: '123' });
+    // link2.useParams().queryParams.qw
   });
 });
