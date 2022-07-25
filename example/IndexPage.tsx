@@ -14,8 +14,23 @@ export const IndexPage = () => {
         <Link to={Links.Array.link({ qwe: 2 })}>Array</Link>
       </div>
       <div>
-        <Link to={Links.UseQueryParams.link({ id: 1 }, { nmb: 1, str: 'qwe' })}>
-          useQueryParams in createRoute
+        <Link
+          to={Links.UseQueryParamsWithParameterInUrl.link(
+            { id: 1 },
+            { nmb: 1, str: 'qwe' },
+          )}
+        >
+          useQueryParams in createRoute with url parameters
+        </Link>
+      </div>
+      <div>
+        <Link
+          to={Links.UseQueryParamsWithoutParameterInUrl.link({
+            nmb: 1,
+            str: 'qwe',
+          })}
+        >
+          useQueryParams in createRoute without url parameters
         </Link>
       </div>
       <div>

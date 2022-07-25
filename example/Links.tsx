@@ -5,7 +5,7 @@ export const Links = {
   Product: createRoute('/product/:id', { id: RequiredNumberParam }),
   Array: createRoute('/array'),
   Test: createRoute('/test'),
-  UseQueryParams: createRoute(
+  UseQueryParamsWithParameterInUrl: createRoute(
     '/useQueryParams/:id',
     { id: RequiredNumberParam },
     {
@@ -13,5 +13,9 @@ export const Links = {
       nmb: NumberParam,
     },
   ),
+  UseQueryParamsWithoutParameterInUrl: createRoute('/useQueryParams2', {
+    str: StringParam,
+    nmb: NumberParam,
+  }),
   Index: createRoute('/'),
 };

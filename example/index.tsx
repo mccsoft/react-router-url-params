@@ -17,8 +17,12 @@ const App = () => {
         <Route path={Links.Array.route} element={<ArrayParamPage />} />
         <Route path={Links.Test.route} element={<TestPage />} />
         <Route
-          path={Links.UseQueryParams.route}
-          element={<UseQueryParamsInPage />}
+          path={Links.UseQueryParamsWithParameterInUrl.route}
+          element={<UseQueryParamsInPage withParameterInUrl={false} />}
+        />
+        <Route
+          path={Links.UseQueryParamsWithoutParameterInUrl.route}
+          element={<UseQueryParamsInPage withParameterInUrl={true} />}
         />
         <Route path={'*'} element={<IndexPage />} />
       </Routes>

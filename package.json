@@ -29,7 +29,8 @@
   ],
   "scripts": {
     "start": "cd example && yarn start",
-    "do-publish": "yarn test && yarn publish",
+    "do-publish": "yarn typecheck && yarn test && yarn publish",
+    "typecheck": "tsc",
     "build": "dts build",
     "analyze": "size-limit --why",
     "build-storybook": "build-storybook",

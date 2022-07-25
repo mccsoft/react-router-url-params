@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom';
 import { Links } from './Links';
 
-export const UseQueryParamsInPage = () => {
-  const { queryParams, setQueryParams, id } = Links.UseQueryParams.useParams();
+export const UseQueryParamsInPage = (props: {
+  withParameterInUrl: boolean;
+}) => {
+  const { queryParams, setQueryParams, id } = props.withParameterInUrl
+    ? Links.UseQueryParamsWithoutParameterInUrl.useParams()
+    : Links.UseQueryParamsWithParameterInUrl.useParams();
+
   return (
     <div>
       <Link to={Links.Index.link()}>Back</Link>

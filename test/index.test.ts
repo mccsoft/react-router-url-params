@@ -53,7 +53,7 @@ describe('strongly typed links', () => {
   });
 
   it('link - search params without url params', () => {
-    const link = createRoute('/products', undefined, { zxc: StringParam });
+    const link = createRoute('/products', { zxc: StringParam });
     const result = link.link({ zxc: 'qwe' });
     expect(result).toStrictEqual('/products?zxc=qwe');
   });

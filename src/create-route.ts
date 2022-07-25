@@ -1,20 +1,20 @@
 import { ParamParseKey } from 'react-router/lib/router';
-import { generatePath, matchPath, useMatch, useParams } from 'react-router-dom';
-import { createSearchParams } from 'react-router-dom';
+import {
+  createSearchParams,
+  generatePath,
+  matchPath,
+  useMatch,
+  useParams,
+} from 'react-router-dom';
 import { decodeQueryParams, encodeQueryParams } from 'serialize-query-params';
 import {
-  DecodedValueMapPartial,
+  CreateRouteResult,
   Params,
-  ParamsFunctionType,
   ParamTypes,
-  TypedPathMatch,
   URLSearchParamsInit,
 } from './types';
-import {
-  DecodedValueMap,
-  QueryParamConfigMap,
-} from 'serialize-query-params/lib/types';
-import { SetQueryLocal, useQueryParams } from './useQueryParams';
+import { QueryParamConfigMap } from 'serialize-query-params/lib/types';
+import { useQueryParams } from './useQueryParams';
 
 export function createRoute<
   ParamKey extends ParamParseKey<Path>,
@@ -23,37 +23,38 @@ export function createRoute<
   SearchParams extends QueryParamConfigMap,
 >(
   pattern: Path,
-  paramTypes?: ParamsConfig,
-  searchParams?: SearchParams,
-): {
-  /*
-   * Use this to create link to certain page from another page, e.g. <Link to={Links.Authorized.ProductDetails({id:123})}>link</Link>
-   */
-  link: ParamsFunctionType<Path, ParamsConfig, ParamKey, SearchParams>;
-  /*
-   * Use this when configuring routes, e.g. <Route path={Links.Authorized.ProductDetails.route} element={<ProductDetailsPage />} />
-   */
-  route: string;
-  /*
-   * Use this when you need to match a route. Usually using it directly is not needed, consider using `useMatch` or `matchPath` instead.
-   */
-  pattern: Path;
-  /*
-   * Use this as a strong-type replacement of useParams for the route
-   */
-  useParams: () => DecodedValueMapPartial<ParamsConfig, ParamKey> & {
-    queryParams: DecodedValueMap<SearchParams>;
-    setQueryParams: SetQueryLocal<SearchParams>;
-  };
-  /*
-   * Use this as a strong-type replacement of useMatch for the route
-   */
-  useMatch: () => TypedPathMatch<ParamsConfig, ParamKey> | null;
-  /*
-   * Use this as a strong-type replacement of useMatch for the route
-   */
-  matchPath: (path: string) => TypedPathMatch<ParamsConfig, ParamKey> | null;
-} {
+  searchParams?: Path extends `${infer Start}:${infer End}`
+    ? never
+    : SearchParams,
+): CreateRouteResult<ParamKey, Path, ParamsConfig, SearchParams>;
+export function createRoute<
+  ParamKey extends ParamParseKey<Path>,
+  Path extends string,
+  ParamsConfig extends ParamTypes<ParamKey>,
+  SearchParams extends QueryParamConfigMap,
+>(
+  pattern: Path,
+  urlParams?: Path extends `${infer Start}:${infer End}`
+    ? ParamsConfig
+    : SearchParams,
+  searchParams?: Path extends `${infer Start}:${infer End}`
+    ? SearchParams
+    : never,
+): CreateRouteResult<ParamKey, Path, ParamsConfig, SearchParams>;
+export function createRoute<
+  ParamKey extends ParamParseKey<Path>,
+  Path extends string,
+  ParamsConfig extends ParamTypes<ParamKey>,
+  SearchParams extends QueryParamConfigMap,
+>(
+  pattern: Path,
+  urlParamsConfig?: Path extends `${infer Start}:${infer End}`
+    ? ParamsConfig
+    : SearchParams,
+  searchParamsConfig?: Path extends `${infer Start}:${infer End}`
+    ? SearchParams
+    : never,
+): CreateRouteResult<ParamKey, Path, ParamsConfig, SearchParams> {
   return {
     route: (pattern as any)?.toString(),
     pattern: pattern,
@@ -61,23 +62,51 @@ export function createRoute<
       params?: Params<ParamKey> | undefined,
       search?: URLSearchParamsInit,
     ) => {
-      const encodedParams = paramTypes
-        ? encodeQueryParams(paramTypes as any, params as any)
-        : params;
+      const realUrlParams = pattern.includes(':') ? params : null;
+      const realSearchParams = pattern.includes(':') ? search : params;
+      const realUrlParamsConfig = pattern.includes(':')
+        ? urlParamsConfig
+        : null;
+      const realSearchParamsConfig = pattern.includes(':')
+        ? urlParamsConfig!
+        : searchParamsConfig!;
+      const encodedParams = realUrlParamsConfig
+        ? encodeQueryParams(realUrlParamsConfig as any, realUrlParams as any)
+        : realUrlParams;
+
       let result = generatePath(pattern, encodedParams as any);
-      if (!pattern.includes(':')) {
-        search = params;
-      }
-      if (search) {
-        result = result + '?' + createSearchParams(search as any);
+
+      if (realSearchParams) {
+        result =
+          result +
+          '?' +
+          createSearchParams(
+            realSearchParamsConfig
+              ? encodeQueryParams(
+                  realSearchParamsConfig as any,
+                  realSearchParams as any,
+                )
+              : (realSearchParams as any),
+          );
       }
       return result.replace('*', '');
     }) as any,
     useParams: () => {
       let params = useParams() as any;
-      const [queryParams, setQueryParams] = useQueryParams(searchParams!);
-      if (paramTypes) {
-        params = decodeQueryParams(paramTypes as any, params as any) as any;
+      const realSearchParamsConfig = pattern.includes(':')
+        ? searchParamsConfig!
+        : urlParamsConfig!;
+      const realUrlParamsConfig = pattern.includes(':')
+        ? urlParamsConfig
+        : null;
+      const [queryParams, setQueryParams] = useQueryParams(
+        realSearchParamsConfig,
+      );
+      if (realUrlParamsConfig) {
+        params = decodeQueryParams(
+          urlParamsConfig as any,
+          params as any,
+        ) as any;
       }
       params.queryParams = queryParams;
       params.setQueryParams = setQueryParams;
@@ -87,9 +116,9 @@ export function createRoute<
       const match = useMatch(pattern);
 
       if (match) {
-        if (paramTypes)
+        if (urlParamsConfig)
           match.params = decodeQueryParams(
-            paramTypes as any,
+            urlParamsConfig as any,
             match.params,
           ) as any;
       }
@@ -99,9 +128,9 @@ export function createRoute<
       const match = matchPath(pattern, path);
 
       if (match) {
-        if (paramTypes)
+        if (urlParamsConfig)
           match.params = decodeQueryParams(
-            paramTypes as any,
+            urlParamsConfig as any,
             match.params as any,
           ) as any;
       }

@@ -3,7 +3,8 @@
   "extends": "@tsconfig/create-react-app/tsconfig.json",
   "include": [
     "src",
-    "types"
+    "types",
+    "test"
   ],
   "compilerOptions": {
     "lib": [
