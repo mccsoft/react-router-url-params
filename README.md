@@ -76,8 +76,8 @@ import { useQueryParams, StringParam, NumberParam } from 'react-router-url-param
 
 // reads query parameters `foo` and `bar` from the URL and stores their decoded values
 const [query, setQuery] = useQueryParams({ foo: NumberParam, bar: StringParam });
-setQuery({ foo: 500 })
-setQuery({ foo: 123, bar: 'zzz' }, { replace: true });
+setQuery({ foo: 500 }); // will change the URL to '?foo=500'
+setQuery({ foo: 123, bar: 'zzz' }, { replace: true }); // will change the URL to '?foo=123&bar=zzz'
 
 // to unset or remove a parameter set it to undefined and use pushIn or replaceIn update types
 setQuery({ foo: undefined }) // ?foo=123&bar=zzz becomes ?bar=zzz
