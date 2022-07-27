@@ -4,7 +4,7 @@
 [![MIT](https://img.shields.io/dub/l/vibe-d.svg)](https://opensource.org/licenses/MIT)
 ![Types - TypeScript](https://img.shields.io/npm/types/typescript?style=flat)
 
-Strongly-typed way to manage URL parameters. Works with [react-router](https://reactrouter.com/docs/en/v6/getting-started/overview).
+Strongly-typed way to manage URL parameters. Works with [react-router](https://reactrouter.com/docs/en/v6/getting-started/overview) (v6).
 Allows to strong-type parameters in [routes](#createroute) and [search](#usequeryparams).
 
 
@@ -27,6 +27,10 @@ optionally you could specify a type for the parameters
 ```tsx
 const productPageRoute = createRoute('/products/:id', {id: RequiredNumberParam});
 ```
+or you could even specify parameters that will go to _search_ part (e.g. /products/3 *?sortBy=price*), see [below](#createroute-with-search-params) for details
+```tsx
+const productPageRoute = createRoute('/products/:id', {id: RequiredNumberParam}, {sortBy: StringParam});
+```
 After that you could use it to
 
 1. Generate a link to that page
@@ -40,11 +44,13 @@ const params = productPageRoute.useParams(); // gives you { id: 123 } with corre
 
 3. Match url inside your page (useMatch hook with types)
 ```tsx
-const match = productPageRoute.useMatch(); // gives you: { params: { id: 123 }, pathname: '/products/123', pattern: '/products/:id' } with correct Typescript types 
+const match = productPageRoute.useMatch(); 
+// gives you: { params: { id: 123 }, pathname: '/products/123', pattern: '/products/:id' } with correct Typescript types 
 ```
 4. Match url from arbitrary place (not a hook)
 ```tsx
-const matchAnywhere = productPageRoute.matchPath(window.location.pathname); // gives you: { params: { id: 123 }, pathname: '/products/123', pattern: '/products/:id' } with correct Typescript types
+const matchAnywhere = productPageRoute.matchPath(window.location.pathname); 
+// gives you: { params: { id: 123 }, pathname: '/products/123', pattern: '/products/:id' } with correct Typescript types
 ```
 5. Use it in your Routes configuration:
 ```tsx
@@ -52,7 +58,6 @@ const matchAnywhere = productPageRoute.matchPath(window.location.pathname); // g
   <Route path={productPageRoute.route} element={/*your component here*/}/>
 </Routes>
 ```
-
 
 ## useQueryParams
 This is a port of [use-query-params](https://github.com/pbeshai/use-query-params) to react-router-v6.
@@ -101,6 +106,23 @@ Examples in this table assume query parameter named `qp`.
 | DelimitedNumericArrayParam | number[] | `[1, 2, 3]` | `?qp=1_2_3` |
 
 
+## createRoute with search params
+You could add `useQueryParams` support directly into `createRoute` function as well! Just add a 3rd parameter to `createRoute`, specifying the types of your *search* parameters:
+```tsx
+const productPageRoute = createRoute('/products/:id', {id: RequiredNumberParam}, {sortBy: StringParam});
+```
+After that you could use `.link` to generate a URL:
+```tsx
+productPageRoute.link({id: 123}, {sortBy: 'price'}); 
+// gives you /products/123?sortBy=price, and Typescript hints you about available parameters
+```
+and you could use `.useParams` to read *search* parameters as well:
+```tsx
+const params = productPageRoute.useParams(); 
+// gives you { id: 123, queryParams: { sortBy: 'price' }, setQueryParams: (params: {sortBy: string}) => void } with correct Typescript types
+const sortBy = params.queryParams.sortBy; // sortBy will be typed according to the definition in createRoute
+params.setQueryParams({ sortBy: 'availabilityDate' }); // this will change the searchParam. Function argument will be correctly typed as well
+```
 
 ## Contributions and support
 Issues and Pull Requests are welcome.
