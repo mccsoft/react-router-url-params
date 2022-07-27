@@ -123,6 +123,7 @@ const params = productPageRoute.useParams();
 const sortBy = params.queryParams.sortBy; // sortBy will be typed according to the definition in createRoute
 params.setQueryParams({ sortBy: 'availabilityDate' }); // this will change the searchParam. Function argument will be correctly typed as well
 ```
+Note that `useMatch` and `matchPath` **do not** have the `queryParams` and `setQueryParams` props. If you'd like them to be added, please create an issue!
 
 ## Contributions and support
 Issues and Pull Requests are welcome.
