@@ -66,7 +66,7 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
         typeof changes === 'function'
           ? changes(resultRef.current as any)
           : changes;
-      const encoded = encodeQueryParams(paramConfigMap, values);
+      const encoded = encodeQueryParams(paramConfigMapRef.current, values);
       Object.keys(values).forEach((key) => {
         const keyValue = (encoded as any)[key];
         if (Array.isArray(keyValue)) {
@@ -85,7 +85,7 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
 
       setSearchParams(searchParamsRef.current, navigateOptions);
     },
-    [paramConfigMap, setSearchParams],
+    [setSearchParams],
   );
 
   return useMemo(
