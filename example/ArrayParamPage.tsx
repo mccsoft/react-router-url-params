@@ -31,6 +31,13 @@ export const ArrayParamPage = () => {
         >
           Change ids to 3,4
         </button>
+        <button
+          onClick={() => {
+            setQueryParams({ ids: [] });
+          }}
+        >
+          Change ids to []
+        </button>
       </div>
       <div>
         Id: {queryParams.id}

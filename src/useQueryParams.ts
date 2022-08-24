@@ -70,10 +70,14 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
       Object.keys(values).forEach((key) => {
         const keyValue = (encoded as any)[key];
         if (Array.isArray(keyValue)) {
-          keyValue.forEach((v, index) => {
-            if (index === 0) searchParamsRef.current.set(key, v);
-            else searchParamsRef.current.append(key, v);
-          });
+          if (keyValue.length > 0) {
+            keyValue.forEach((v, index) => {
+              if (index === 0) searchParamsRef.current.set(key, v);
+              else searchParamsRef.current.append(key, v);
+            });
+          } else {
+            searchParamsRef.current.delete(key);
+          }
         } else {
           if (keyValue === undefined || keyValue === null) {
             searchParamsRef.current.delete(key);
