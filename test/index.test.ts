@@ -68,6 +68,12 @@ describe('strongly typed links', () => {
     expect(result).toStrictEqual('/products/123?zxc=hh');
   });
 
+  it('link - splat params', () => {
+    const link = createRoute('/products/:id/*');
+    const result = link.link({ id: '123' }, { asd: 'qwe' });
+    expect(result).toStrictEqual('/products/123?asd=qwe');
+  });
+
   it('the following lines should give typescript errors', () => {
     // noinspection JSUnusedLocalSymbols
     const link = createRoute('/products/:id', { id: RequiredNumberParam });
@@ -82,7 +88,6 @@ describe('strongly typed links', () => {
     //   { id: NumberParam },
     //   { q: NumberParam },
     // );
-    // link.link();
     // link.link();
     // link.link({});
     // link.link({ zxc: 123 });

@@ -1,5 +1,8 @@
-import { QueryParamConfig } from 'serialize-query-params/lib/types';
-import { NumberParam, StringParam } from 'serialize-query-params';
+import {
+  NumberParam,
+  StringParam,
+  QueryParamConfig,
+} from 'serialize-query-params';
 
 export const RequiredNumberParam: QueryParamConfig<number, number> = {
   encode: (value) => NumberParam.encode(value),

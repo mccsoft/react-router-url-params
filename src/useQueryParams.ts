@@ -1,12 +1,10 @@
 import {
-  DecodedValueMap,
-  QueryParamConfig,
-  QueryParamConfigMap,
-} from 'serialize-query-params/lib/types';
-import {
   decodeQueryParams,
   encodeQueryParams,
   StringParam,
+  DecodedValueMap,
+  QueryParamConfig,
+  QueryParamConfigMap,
 } from 'serialize-query-params';
 import { useSearchParams } from 'react-router-dom';
 import { useCallback, useMemo, useRef } from 'react';

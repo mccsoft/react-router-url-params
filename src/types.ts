@@ -2,8 +2,8 @@ import {
   DecodedValueMap,
   QueryParamConfig,
   QueryParamConfigMap,
-} from 'serialize-query-params/lib/types';
-import { ParamParseKey, PathMatch } from 'react-router/lib/router';
+} from 'serialize-query-params';
+import { ParamParseKey, PathMatch } from 'react-router';
 import { SetQueryLocal } from './useQueryParams';
 
 export declare type Params<Key extends string = string> = {
@@ -23,7 +23,7 @@ export declare type ParamsFunctionType<
   QPCMap extends QueryParamConfigMap,
 > = Path extends `${string}:${string}`
   ? (
-      params: DecodedValueMapInLink<ParamsConfig, ParamKey>,
+      params: Omit<DecodedValueMapInLink<ParamsConfig, ParamKey>, '*'>,
       search?: QPCMap | URLSearchParamsInit,
     ) => string
   : (search?: QPCMap | URLSearchParamsInit) => string;

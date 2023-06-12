@@ -1,4 +1,4 @@
-import { ParamParseKey } from 'react-router/lib/router';
+import { ParamParseKey } from 'react-router';
 import {
   createSearchParams,
   generatePath,
@@ -13,7 +13,7 @@ import {
   ParamTypes,
   URLSearchParamsInit,
 } from './types';
-import { QueryParamConfigMap } from 'serialize-query-params/lib/types';
+import { QueryParamConfigMap } from 'serialize-query-params';
 import { useQueryParams } from './useQueryParams';
 
 /**
