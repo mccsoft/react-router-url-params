@@ -68,6 +68,15 @@ describe('strongly typed links', () => {
     expect(result).toStrictEqual('/products/123?zxc=hh');
   });
 
+  it('link - optional parameters', () => {
+    const link = createRoute('/products/:type/:id?');
+    const result1 = link.link({ type: '123' }, { asd: 'qwe' });
+    expect(result1).toStrictEqual('/products/123?asd=qwe');
+
+    const result2 = link.link({ type: '123', id: '11' }, { asd: 'qwe' });
+    expect(result2).toStrictEqual('/products/123/11?asd=qwe');
+  });
+
   it('link - splat params', () => {
     const link = createRoute('/products/:id/*');
     const result = link.link({ id: '123' }, { asd: 'qwe' });

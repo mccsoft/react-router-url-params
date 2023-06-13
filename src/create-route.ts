@@ -9,6 +9,7 @@ import {
 import { decodeQueryParams, encodeQueryParams } from 'serialize-query-params';
 import {
   CreateRouteResult,
+  ParamParseKeyOptional,
   Params,
   ParamTypes,
   URLSearchParamsInit,
@@ -23,9 +24,9 @@ import { useQueryParams } from './useQueryParams';
  *  @param {any} searchParamsConfig - object that specifies the types of Search (i.e. ?name=flower&color=yellow) parameters (e.g. { name: StringParam })
  */
 export function createRoute<
-  ParamKey extends ParamParseKey<Path>,
+  ParamKey extends ParamParseKey<Path>, // ParamParseKey<'/asd/:id/:type?'> = 'id' | 'type'
   Path extends string,
-  ParamsConfig extends ParamTypes<ParamKey>,
+  ParamsConfig extends ParamTypes<ParamKey>, // ParamTypes<ParamParseKey<'/asd/:id/:type?'>> = { id?: string|undefined; type?: string|undefined; }
   SearchParams extends QueryParamConfigMap,
 >(
   pattern: Path,
@@ -38,7 +39,7 @@ export function createRoute<
     route: (pattern as any)?.toString(),
     pattern: pattern,
     link: ((
-      params?: Params<ParamKey> | undefined,
+      params?: Params<ParamParseKeyOptional<Path>> | undefined, // Params<ParamParseKey<'/asd/:id/:type?'>> = { id: string | number; type?: string | number | undefined; }
       search?: URLSearchParamsInit,
     ) => {
       const realUrlParams = pattern.includes(':') ? params : null;

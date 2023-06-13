@@ -6,8 +6,43 @@ import {
 import { ParamParseKey, PathMatch } from 'react-router';
 import { SetQueryLocal } from './useQueryParams';
 
+declare type _PathParam2<Path extends string> =
+  Path extends `${infer L}/${infer R}`
+    ? _PathParam2<L> | _PathParam2<R>
+    : Path extends `:${infer Param}`
+    ? Param
+    : never;
+/**
+ * Examples:
+ * "/a/b/*" -> "*"
+ * ":a" -> "a"
+ * "/a/:b" -> "b"
+ * "/a/blahblahblah:b" -> "b"
+ * "/:a/:b" -> "a" | "b"
+ * "/:a/b/:c/*" -> "a" | "c" | "*"
+ * "/:a/b/:c?/*" -> "a" | "c?" | "*"
+ */
+declare type PathParam2<Path extends string> = Path extends '*' | '/*'
+  ? '*'
+  : Path extends `${infer Rest}/*`
+  ? '*' | _PathParam2<Rest>
+  : _PathParam2<Path>;
+
+// ParamParseKeyOptional<'/asd/:id/:type?'> = 'id' | 'type?'
+export declare type ParamParseKeyOptional<Segment extends string> = [
+  PathParam2<Segment>,
+] extends [never]
+  ? string
+  : PathParam2<Segment>;
 export declare type Params<Key extends string = string> = {
-  readonly [key in Key]: string | number;
+  readonly [key in Key as key extends `${infer _Param}?` ? never : key]:
+    | string
+    | number;
+} & {
+  readonly [key in Key as key extends `${infer Param}?` ? Param : never]?:
+    | string
+    | number
+    | undefined;
 };
 export declare type URLSearchParamsInit =
   | string
@@ -36,18 +71,34 @@ export declare type DecodedValueMapPartial<
   ParamsMap extends ParamTypes<ParamKey>,
   ParamKey extends string = string,
 > = {
-  [P in ParamKey]: ParamsMap[P] extends QueryParamConfig<any, any>
+  [P in ParamKey as P extends `${infer _Param}?`
+    ? never
+    : P]: ParamsMap[P] extends QueryParamConfig<any, any>
     ? ReturnType<ParamsMap[P]['decode']>
     : string;
+} & {
+  [P in ParamKey as P extends `${infer Param}?`
+    ? Param
+    : never]?: ParamsMap[P] extends QueryParamConfig<any, any>
+    ? ReturnType<ParamsMap[P]['decode']> | undefined
+    : string | undefined;
 };
 
 export declare type DecodedValueMapInLink<
   ParamsMap extends ParamTypes<ParamKey>,
   ParamKey extends string = string,
 > = {
-  [P in ParamKey]: ParamsMap[P] extends QueryParamConfig<any, any>
+  [P in ParamKey as P extends `${infer _Param}?`
+    ? never
+    : P]: ParamsMap[P] extends QueryParamConfig<any, any>
     ? ReturnType<ParamsMap[P]['decode']>
     : string | number;
+} & {
+  [P in ParamKey as P extends `${infer Param}?`
+    ? Param
+    : never]?: ParamsMap[P] extends QueryParamConfig<any, any>
+    ? ReturnType<ParamsMap[P]['decode']> | undefined
+    : string | number | undefined;
 };
 
 export declare type TypedPathMatch<
@@ -69,7 +120,12 @@ export declare type CreateRouteResult<
   /*
    * Use this to create link to certain page from another page, e.g. <Link to={Links.Authorized.ProductDetails({id:123})}>link</Link>
    */
-  link: ParamsFunctionType<Path, ParamsConfig, ParamKey, SearchParams>;
+  link: ParamsFunctionType<
+    Path,
+    ParamsConfig,
+    ParamParseKeyOptional<Path>,
+    SearchParams
+  >;
   /*
    * Use this when configuring routes, e.g. <Route path={Links.Authorized.ProductDetails.route} element={<ProductDetailsPage />} />
    */
