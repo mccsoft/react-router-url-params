@@ -98,16 +98,26 @@ export function createRoute<
       return match as any;
     },
     matchPath: (path) => {
-      const match = matchPath(pattern, path);
+      do {
+        const currentPattern = pattern.includes('?')
+          ? pattern.replaceAll('?', '')
+          : pattern;
+        const match = matchPath(currentPattern, path);
 
-      if (match) {
-        if (urlParamsConfig)
-          match.params = decodeQueryParams(
-            urlParamsConfig as any,
-            match.params as any,
-          ) as any;
-      }
-      return match as any;
+        if (match) {
+          if (urlParamsConfig)
+            match.params = decodeQueryParams(
+              urlParamsConfig as any,
+              match.params as any,
+            ) as any;
+        } else if (pattern.includes('?')) {
+          pattern = pattern.substring(0, pattern.lastIndexOf(':') - 1) as any;
+          continue;
+        } else {
+          return null;
+        }
+        return match as any;
+      } while (true);
     },
   };
 }

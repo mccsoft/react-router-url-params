@@ -1,4 +1,3 @@
-import { generatePath } from 'react-router';
 import { createRoute, RequiredNumberParam } from '../src';
 import { NumberParam, StringParam } from 'serialize-query-params';
 
@@ -28,6 +27,48 @@ describe('strongly typed links', () => {
     expect(result.params.id).toStrictEqual(123);
     expect(result.params.pid).toStrictEqual('435');
   });
+
+  it('matchPath - 0', () => {
+    const link = createRoute('/products/:id/:pid?', {
+      id: RequiredNumberParam,
+    });
+    const result = link.matchPath('/products/1/435')!;
+    expect(result.params.id).toStrictEqual(1);
+    expect(result.params.pid).toStrictEqual('435');
+  });
+
+  it('matchPath - last optional', () => {
+    const link = createRoute('/products/:id/:pid?');
+    const result = link.matchPath('/products/1/435')!;
+    expect(result.params.id).toStrictEqual('1');
+    expect(result.params.pid).toStrictEqual('435');
+  });
+
+  it('matchPath - both optional, both provided', () => {
+    const link = createRoute('/products/:id?/:pid?');
+    const result = link.matchPath('/products/1/435')!;
+    expect(result.params.id).toStrictEqual('1');
+    expect(result.params.pid).toStrictEqual('435');
+  });
+
+  it('matchPath - both optional, first provided', () => {
+    const link = createRoute('/products/:id?/:pid?');
+    const result = link.matchPath('/products/1')!;
+    expect(result.params.id).toStrictEqual('1');
+    expect(result.params.pid).toBeFalsy();
+  });
+
+  it('matchPath - both optional, none provided', () => {
+    const link = createRoute('/products/:id?/:pid?');
+    const result = link.matchPath('/products')!;
+    expect(result.params.id).toBeFalsy();
+    expect(result.params.pid).toBeFalsy();
+  });
+
+  // it('matchPath (react-router) - optional', () => {
+  //   const result = matchPath('/products/:id?/', '/products/1');
+  //   expect(result.params.id).toStrictEqual('1');
+  // });
 
   it('link - number', () => {
     const link = createRoute('/products/:id', { id: RequiredNumberParam });
