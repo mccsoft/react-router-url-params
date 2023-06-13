@@ -98,10 +98,12 @@ export function createRoute<
       return match as any;
     },
     matchPath: (path) => {
+      // we create a copy to NOT modify a `pattern` variable (that is used in e.g. `link` method).
+      let localPattern = pattern;
       do {
-        const currentPattern = pattern.includes('?')
-          ? pattern.replaceAll('?', '')
-          : pattern;
+        const currentPattern = localPattern.includes('?')
+          ? localPattern.replaceAll('?', '')
+          : localPattern;
         const match = matchPath(currentPattern, path);
 
         if (match) {
@@ -110,8 +112,11 @@ export function createRoute<
               urlParamsConfig as any,
               match.params as any,
             ) as any;
-        } else if (pattern.includes('?')) {
-          pattern = pattern.substring(0, pattern.lastIndexOf(':') - 1) as any;
+        } else if (localPattern.includes('?')) {
+          localPattern = localPattern.substring(
+            0,
+            localPattern.lastIndexOf(':') - 1,
+          ) as any;
           continue;
         } else {
           return null;

@@ -119,6 +119,13 @@ describe('strongly typed links', () => {
     expect(result2).toStrictEqual('/products/123/11?asd=qwe');
   });
 
+  it('link - optional parameters after match', () => {
+    const link = createRoute('/documents/designer/:templateType/:templateId?');
+    link.matchPath('/documents/designer/0');
+    const result = link.link({ templateType: 0, templateId: 123 });
+    expect(result).toStrictEqual('/documents/designer/0/123');
+  });
+
   it('link - splat params', () => {
     const link = createRoute('/products/:id/*');
     const result = link.link({ id: '123' }, { asd: 'qwe' });
