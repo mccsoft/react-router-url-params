@@ -1,3 +1,4 @@
+import { generatePath } from 'react-router';
 import { createRoute, RequiredNumberParam } from '../src';
 import { NumberParam, StringParam } from 'serialize-query-params';
 
@@ -81,6 +82,12 @@ describe('strongly typed links', () => {
     const link = createRoute('/products/:id/*');
     const result = link.link({ id: '123' }, { asd: 'qwe' });
     expect(result).toStrictEqual('/products/123?asd=qwe');
+  });
+
+  it('link - 0 as value', () => {
+    const link = createRoute('/products/:id');
+    const result = link.link({ id: 0 });
+    expect(result).toStrictEqual('/products/0');
   });
 
   it('the following lines should give typescript errors', () => {

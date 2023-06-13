@@ -47,7 +47,14 @@ export function createRoute<
       const encodedParams = urlParamsConfig
         ? encodeQueryParams(urlParamsConfig as any, realUrlParams as any)
         : realUrlParams;
-
+      if (encodedParams) {
+        Object.keys(encodedParams).forEach((key) => {
+          if (typeof (encodedParams as any)[key] !== 'string')
+            (encodedParams as any)[key] = (encodedParams as any)[
+              key
+            ].toString();
+        });
+      }
       let result = generatePath(pattern, encodedParams as any);
 
       if (realSearchParams) {
