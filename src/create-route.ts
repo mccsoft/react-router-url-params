@@ -56,7 +56,7 @@ export function createRoute<
           if (typeof (encodedParams as any)[key] !== 'string')
             (encodedParams as any)[key] = (encodedParams as any)[
               key
-            ].toString();
+            ]?.toString();
         });
       }
       let result = generatePath(pattern, encodedParams as any);
