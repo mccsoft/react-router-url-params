@@ -138,6 +138,18 @@ describe('strongly typed links', () => {
     expect(result).toStrictEqual('/products/0');
   });
 
+  it('link - null as value', () => {
+    const link = createRoute('/products/:id?');
+    const result = link.link({ id: null! });
+    expect(result).toStrictEqual('/products');
+  });
+
+  it('link - undefined as value', () => {
+    const link = createRoute('/products/:id?');
+    const result = link.link({ id: undefined! });
+    expect(result).toStrictEqual('/products');
+  });
+
   it('the following lines should give typescript errors', () => {
     // noinspection JSUnusedLocalSymbols
     const link = createRoute('/products/:id', { id: RequiredNumberParam });
