@@ -6,7 +6,11 @@ import {
   useMatch,
   useParams,
 } from 'react-router-dom';
-import { decodeQueryParams, encodeQueryParams } from 'serialize-query-params';
+import {
+  StringParam,
+  decodeQueryParams,
+  encodeQueryParams,
+} from 'serialize-query-params';
 import {
   CreateRouteResult,
   ParamParseKeyOptional,
@@ -76,6 +80,11 @@ export function createRoute<
       let params = useParams() as any;
       const [queryParams, setQueryParams] = useQueryParams(searchParamsConfig!);
       if (urlParamsConfig) {
+        // fix warning 'Passing through parameter * during decoding since it was not configured.'
+        // even if you don't have '*' in your pattern it gets added to params
+        if (params['*'] && !urlParamsConfig['*']) {
+          (urlParamsConfig as any)['*'] = StringParam;
+        }
         params = decodeQueryParams(
           urlParamsConfig as any,
           params as any,
