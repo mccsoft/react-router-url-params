@@ -99,11 +99,7 @@ export function createRoute<
 
       if (match) {
         if (urlParamsConfig) {
-          // fix warning 'Passing through parameter * during decoding since it was not configured.'
-          // even if you don't have '*' in your pattern it gets added to params
-          if (pattern.includes('*') && !urlParamsConfig['*']) {
-            (urlParamsConfig as any)['*'] = StringParam;
-          }
+          addWildcardParamIfNotExist(pattern, urlParamsConfig);
 
           match.params = decodeQueryParams(
             urlParamsConfig as any,
@@ -123,11 +119,13 @@ export function createRoute<
         const match = matchPath(currentPattern, path);
 
         if (match) {
-          if (urlParamsConfig)
+          if (urlParamsConfig) {
+            addWildcardParamIfNotExist(localPattern, urlParamsConfig);
             match.params = decodeQueryParams(
               urlParamsConfig as any,
               match.params as any,
             ) as any;
+          }
         } else if (localPattern.includes('?')) {
           localPattern = localPattern.substring(
             0,
@@ -141,4 +139,15 @@ export function createRoute<
       } while (true);
     },
   };
+}
+
+function addWildcardParamIfNotExist(
+  pattern: string,
+  urlParamsConfig: QueryParamConfigMap,
+) {
+  // fix warning 'Passing through parameter * during decoding since it was not configured.'
+  // even if you don't have '*' in your pattern it gets added to params
+  if (pattern.includes('*') && !urlParamsConfig['*']) {
+    (urlParamsConfig as any)['*'] = StringParam;
+  }
 }
