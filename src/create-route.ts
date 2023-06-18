@@ -98,11 +98,18 @@ export function createRoute<
       const match = useMatch(pattern);
 
       if (match) {
-        if (urlParamsConfig)
+        if (urlParamsConfig) {
+          // fix warning 'Passing through parameter * during decoding since it was not configured.'
+          // even if you don't have '*' in your pattern it gets added to params
+          if (pattern.includes('*') && !urlParamsConfig['*']) {
+            (urlParamsConfig as any)['*'] = StringParam;
+          }
+
           match.params = decodeQueryParams(
             urlParamsConfig as any,
             match.params,
           ) as any;
+        }
       }
       return match as any;
     },
