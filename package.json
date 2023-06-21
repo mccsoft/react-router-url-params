@@ -1,6 +1,6 @@
 {
   "name": "react-router-url-params",
-  "version": "0.8.9",
+  "version": "0.8.10",
   "description": "Strongly-typed way to manage URL parameters in react-router",
   "homepage": "https://github.com/mcctomsk/react-router-url-params#readme",
   "repository": {
