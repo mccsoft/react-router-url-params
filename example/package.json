@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "react-app-polyfill": "^3.0.0",
-    "query-string": "5.1.1",
+    "query-string": "^7.1.3",
     "react-router": "6.3.0",
     "react-router-dom": "6.3.0"
   },

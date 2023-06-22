@@ -3,6 +3,7 @@ import {
   BooleanParam,
   DateParam,
   DelimitedArrayParam,
+  NumberParam,
   ObjectParam,
   StringParam,
 } from 'serialize-query-params';
@@ -15,12 +16,44 @@ export const TestPage = () => {
     bool: BooleanParam,
     date: DateParam,
     obj: ObjectParam,
+    num: NumberParam,
     delimitedArray: DelimitedArrayParam,
   });
   const [, setBool] = useQueryParam('bool', BooleanParam);
   return (
     <div>
       <Link to={Links.Index.link()}>Back</Link>
+      <div>
+        page: {queryParams.num}
+        <button
+          onClick={() => {
+            setQueryParams({ num: undefined });
+          }}
+        >
+          Set to undefined
+        </button>
+        <button
+          onClick={() => {
+            setQueryParams({ num: null });
+          }}
+        >
+          Set to null
+        </button>
+        <button
+          onClick={() => {
+            setQueryParams({ num: 0 });
+          }}
+        >
+          Set to 0
+        </button>
+        <button
+          onClick={() => {
+            setQueryParams({ num: 1337 });
+          }}
+        >
+          Set to 1337
+        </button>
+      </div>
       <div>
         sortby: {queryParams.sortBy}
         <button
@@ -29,6 +62,13 @@ export const TestPage = () => {
           }}
         >
           Set to undefined
+        </button>
+        <button
+          onClick={() => {
+            setQueryParams({ sortBy: null });
+          }}
+        >
+          Set to null
         </button>
         <button
           onClick={() => {
@@ -121,6 +161,20 @@ export const TestPage = () => {
           }}
         >
           Set to ['qwe', '123']
+        </button>
+        <button
+          onClick={() => {
+            setQueryParams({ delimitedArray: null });
+          }}
+        >
+          Set to null
+        </button>
+        <button
+          onClick={() => {
+            setQueryParams({ delimitedArray: undefined });
+          }}
+        >
+          Set to undefined
         </button>
       </div>
     </div>

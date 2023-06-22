@@ -1,11 +1,5 @@
 import { ParamParseKey } from 'react-router';
-import {
-  createSearchParams,
-  generatePath,
-  matchPath,
-  useMatch,
-  useParams,
-} from 'react-router-dom';
+import { generatePath, matchPath, useMatch, useParams } from 'react-router-dom';
 import {
   StringParam,
   decodeQueryParams,
@@ -20,6 +14,7 @@ import {
 } from './types';
 import { QueryParamConfigMap } from 'serialize-query-params';
 import { useQueryParams } from './useQueryParams';
+import queryString from 'query-string';
 
 /**
  *  Generates various hooks and helpers based on URL pattern and optional parameter types.
@@ -62,17 +57,17 @@ export function createRoute<
       let result = generatePath(pattern, encodedParams as any);
 
       if (realSearchParams) {
-        result =
-          result +
-          '?' +
-          createSearchParams(
-            searchParamsConfig
-              ? encodeQueryParams(
-                  searchParamsConfig as any,
-                  realSearchParams as any,
-                )
-              : (realSearchParams as any),
-          );
+        const searchString = queryString.stringify(
+          searchParamsConfig
+            ? encodeQueryParams(
+                searchParamsConfig as any,
+                realSearchParams as any,
+              )
+            : (realSearchParams as any),
+        );
+        if (searchString) {
+          result = result + '?' + searchString;
+        }
       }
       return result.replace('*', '');
     }) as any,
