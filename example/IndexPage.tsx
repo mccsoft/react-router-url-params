@@ -36,6 +36,9 @@ export const IndexPage = () => {
       <div>
         <Link to={Links.Test.link()}>Test</Link>
       </div>
+      <div>
+        <Link to={Links.RoutingTest.link()}>RoutingTest</Link>
+      </div>
     </div>
   );
 };

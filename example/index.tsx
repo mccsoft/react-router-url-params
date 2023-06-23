@@ -8,6 +8,7 @@ import { IndexPage } from './IndexPage';
 import { Links } from './Links';
 import { TestPage } from './TestPage';
 import { UseQueryParamsInPage } from './UseQueryParamsInPage';
+import { RoutingTestPage } from './RoutingTestPage';
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
         <Route path={Links.Product.route} element={<ProductPage />} />
         <Route path={Links.Array.route} element={<ArrayParamPage />} />
         <Route path={Links.Test.route} element={<TestPage />} />
+        <Route path={Links.RoutingTest.route} element={<RoutingTestPage />} />
         <Route
           path={Links.UseQueryParamsWithParameterInUrl.route}
           element={<UseQueryParamsInPage withParameterInUrl={false} />}

@@ -1,54 +1,40 @@
-import { createRoute, useQueryParam, useQueryParams } from '../src';
-import {
-  BooleanParam,
-  DateParam,
-  DelimitedArrayParam,
-  NumberParam,
-  ObjectParam,
-  StringParam,
-} from 'serialize-query-params';
 import { Link } from 'react-router-dom';
 import { Links } from './Links';
+import { useNavigate, useParams } from 'react-router';
 
-export const TestPage = () => {
-  const [queryParams, setQueryParams] = useQueryParams({
-    sortBy: StringParam,
-    bool: BooleanParam,
-    date: DateParam,
-    obj: ObjectParam,
-    num: NumberParam,
-    delimitedArray: DelimitedArrayParam,
-  });
-  const [, setBool] = useQueryParam('bool', BooleanParam);
+export const RoutingTestPage = () => {
+  const { queryParams } = Links.RoutingTest.useParams();
+  const navigate = useNavigate();
   return (
     <div>
       <Link to={Links.Index.link()}>Back</Link>
+      <div>This page uses useNavigate and link to change values</div>
       <div>
-        page: {queryParams.num}
+        page: {JSON.stringify(queryParams.num)}
         <button
           onClick={() => {
-            setQueryParams({ num: undefined });
+            navigate(Links.RoutingTest.link({ num: undefined }));
           }}
         >
           Set to undefined
         </button>
         <button
           onClick={() => {
-            setQueryParams({ num: null });
+            navigate(Links.RoutingTest.link({ num: null }));
           }}
         >
           Set to null
         </button>
         <button
           onClick={() => {
-            setQueryParams({ num: 0 });
+            navigate(Links.RoutingTest.link({ num: 0 }));
           }}
         >
           Set to 0
         </button>
         <button
           onClick={() => {
-            setQueryParams({ num: 1337 });
+            navigate(Links.RoutingTest.link({ num: 1337 }));
           }}
         >
           Set to 1337
@@ -58,72 +44,55 @@ export const TestPage = () => {
         sortby: {queryParams.sortBy}
         <button
           onClick={() => {
-            setQueryParams({ sortBy: undefined });
+            navigate(Links.RoutingTest.link({ sortBy: undefined }));
           }}
         >
           Set to undefined
         </button>
         <button
           onClick={() => {
-            setQueryParams({ sortBy: null });
+            navigate(Links.RoutingTest.link({ sortBy: null }));
           }}
         >
           Set to null
         </button>
         <button
           onClick={() => {
-            setQueryParams({ sortBy: 'asd' });
+            navigate(Links.RoutingTest.link({ sortBy: 'asd' }));
           }}
         >
           Set to 'asd'
         </button>
       </div>
       <div>
-        boolean: {queryParams.bool === true ? 'true' : 'false'}
+        boolean: {JSON.stringify(queryParams.bool)}
         <button
           onClick={() => {
-            setQueryParams({ bool: true });
+            navigate(Links.RoutingTest.link({ bool: true }));
           }}
         >
           Set to true
         </button>
         <button
           onClick={() => {
-            setQueryParams({ bool: false });
+            navigate(Links.RoutingTest.link({ bool: false }));
           }}
         >
           Set to false
-        </button>
-        <button
-          onClick={() => {
-            setQueryParams((old) => {
-              old.bool = false;
-              return old;
-            });
-          }}
-        >
-          Set to false using function
-        </button>
-        <button
-          onClick={() => {
-            setBool((old) => !old);
-          }}
-        >
-          Toggle using useQueryParam function
         </button>
       </div>
       <div>
         date: {queryParams.date?.toString()}
         <button
           onClick={() => {
-            setQueryParams({ date: new Date(2020, 10, 2) });
+            navigate(Links.RoutingTest.link({ date: new Date(2020, 10, 2) }));
           }}
         >
           Set to 2020-10-02
         </button>
         <button
           onClick={() => {
-            setQueryParams({ date: new Date(2021, 11, 1) });
+            navigate(Links.RoutingTest.link({ date: new Date(2021, 11, 1) }));
           }}
         >
           Set to 2021-11-01
@@ -133,50 +102,73 @@ export const TestPage = () => {
         obj: {JSON.stringify(queryParams.obj)}
         <button
           onClick={() => {
-            setQueryParams({ obj: { asd: 'poi', tyu: 'g1', rty: 'uu' } });
+            navigate(
+              Links.RoutingTest.link({
+                obj: { asd: 'poi', tyu: 'g1', rty: 'uu' },
+              }),
+            );
           }}
         >
           Set to {JSON.stringify({ asd: 'poi', tyu: 'g1', rty: 'uu' })}
         </button>
         <button
           onClick={() => {
-            setQueryParams({ obj: { asd: 'zxc', tyu: '1' } });
+            navigate(Links.RoutingTest.link({ obj: { asd: 'zxc', tyu: '1' } }));
           }}
         >
           Set to {JSON.stringify({ asd: 'zxc', tyu: '1' })}
+        </button>
+        <button
+          onClick={() => {
+            navigate(Links.RoutingTest.link({ obj: null }));
+          }}
+        >
+          Set to null
         </button>
       </div>
       <div>
         delimitedArray: {JSON.stringify(queryParams.delimitedArray)}
         <button
           onClick={() => {
-            setQueryParams({ delimitedArray: ['asd', 'zxc'] });
+            navigate(
+              Links.RoutingTest.link({ delimitedArray: ['asd', 'zxc'] }),
+            );
           }}
         >
           Set to ['asd','zxc']
         </button>
         <button
           onClick={() => {
-            setQueryParams({ delimitedArray: ['qwe', '123'] });
+            navigate(
+              Links.RoutingTest.link({ delimitedArray: ['qwe', '123'] }),
+            );
           }}
         >
           Set to ['qwe', '123']
         </button>
         <button
           onClick={() => {
-            setQueryParams({ delimitedArray: null });
+            navigate(Links.RoutingTest.link({ delimitedArray: [] }));
+          }}
+        >
+          Set to []
+        </button>
+        <button
+          onClick={() => {
+            navigate(Links.RoutingTest.link({ delimitedArray: null }));
           }}
         >
           Set to null
         </button>
         <button
           onClick={() => {
-            setQueryParams({ delimitedArray: undefined });
+            navigate(Links.RoutingTest.link({ delimitedArray: undefined }));
           }}
         >
           Set to undefined
         </button>
       </div>
+      <div>queryParams: {JSON.stringify(queryParams)}</div>
     </div>
   );
 };

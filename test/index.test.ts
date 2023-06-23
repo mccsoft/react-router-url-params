@@ -170,4 +170,22 @@ describe('strongly typed links', () => {
     // link.link({ id: '123' });
     // link2.useParams().queryParams.qw;
   });
+
+  it('link - search - number - undefined', () => {
+    const link = createRoute('/products', undefined, { price: NumberParam });
+    const result = link.link({ price: undefined });
+    expect(result).toStrictEqual('/products');
+  });
+
+  it('link - search - number - null', () => {
+    const link = createRoute('/products', undefined, { price: NumberParam });
+    const result = link.link({ price: null });
+    expect(result).toStrictEqual('/products?price');
+  });
+
+  it('link - search - number - value', () => {
+    const link = createRoute('/products', undefined, { price: NumberParam });
+    const result = link.link({ price: 1 });
+    expect(result).toStrictEqual('/products?price=1');
+  });
 });
