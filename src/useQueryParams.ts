@@ -12,6 +12,7 @@ import shallowEqual from './shallowEqual';
 import queryString from 'query-string';
 import { useNavigate } from 'react-router';
 
+export type URLUpdateType = 'push' | 'pushIn' | 'replace' | 'replaceIn';
 type NewValueType<D> = D | ((latestValue: D) => D);
 export type SetQueryLocal<QPCMap extends QueryParamConfigMap> = (
   changes:
@@ -19,12 +20,7 @@ export type SetQueryLocal<QPCMap extends QueryParamConfigMap> = (
     | ((
         latestValues: DecodedValueMap<QPCMap>,
       ) => Partial<DecodedValueMap<QPCMap>>),
-  navigateOptions?:
-    | {
-        replace?: boolean | undefined;
-        state?: any;
-      }
-    | undefined,
+  updateType?: URLUpdateType | undefined,
 ) => void;
 
 const useQueryParamsDefaultResult = [{}, () => {}];
@@ -58,13 +54,28 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
   resultRef.current = result;
 
   const setValue: SetQueryLocal<QPCMap> = useCallback(
-    (changes, navigateOptions) => {
-      const values =
+    (changes, updateType) => {
+      const changesToUse =
         typeof changes === 'function'
           ? changes(resultRef.current as any)
           : changes;
-      const encoded = encodeQueryParams(paramConfigMapRef.current, values);
-      navigate('?' + queryString.stringify(encoded), navigateOptions);
+
+      let newQueryParams: ReturnType<typeof encodeQueryParams>;
+      if (updateType === 'push' || updateType === 'replace') {
+        newQueryParams = encodeQueryParams(
+          paramConfigMapRef.current,
+          changesToUse,
+        );
+      } else {
+        newQueryParams = encodeQueryParams(paramConfigMapRef.current, {
+          ...resultRef.current,
+          ...changesToUse,
+        });
+      }
+
+      navigate('?' + queryString.stringify(newQueryParams), {
+        replace: updateType?.startsWith('replace'),
+      });
     },
     [navigate],
   );
@@ -80,12 +91,7 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
 
 export declare type SetValue<D> = (
   newValue: NewValueType<D>,
-  navigateOptions?:
-    | {
-        replace?: boolean | undefined;
-        state?: any;
-      }
-    | undefined,
+  updateType?: URLUpdateType | undefined,
 ) => void;
 
 /**
@@ -99,14 +105,14 @@ export const useQueryParam = <D, D2 = D>(
   const [queryParams, setQueryParams] = useQueryParams({
     [name]: paramConfig,
   });
-  const setValue: SetValue<D> = useCallback((value, navigateOptions) => {
+  const setValue: SetValue<D> = useCallback((value, updateType) => {
     if (typeof value === 'function') {
       setQueryParams((oldValues) => {
         oldValues[name] = (value as any)(oldValues[name]);
         return oldValues;
       });
     } else {
-      setQueryParams({ [name]: value } as any, navigateOptions);
+      setQueryParams({ [name]: value } as any, updateType);
     }
   }, []);
   return useMemo(
