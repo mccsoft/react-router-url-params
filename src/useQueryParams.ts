@@ -6,10 +6,11 @@ import {
   QueryParamConfig,
   QueryParamConfigMap,
 } from 'serialize-query-params';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useCallback, useMemo, useRef } from 'react';
 import shallowEqual from './shallowEqual';
 import queryString from 'query-string';
+import { useNavigate } from 'react-router';
 
 type NewValueType<D> = D | ((latestValue: D) => D);
 export type SetQueryLocal<QPCMap extends QueryParamConfigMap> = (
@@ -41,20 +42,18 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
     : paramConfigMap;
   paramConfigMapRef.current = paramConfigMap;
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const searchParamsStringified = searchParams.toString();
-  const searchParamsRef = useRef(searchParams);
-  searchParamsRef.current = searchParams;
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const result = useMemo(() => {
     if (paramConfigMap) {
       return decodeQueryParams(
         paramConfigMap,
-        queryString.parse(searchParamsStringified) as any,
+        queryString.parse(location.search, {}) as any,
       );
     }
     return {};
-  }, [searchParamsStringified]);
+  }, [location.search]);
   const resultRef = useRef(result);
   resultRef.current = result;
 
@@ -65,9 +64,9 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
           ? changes(resultRef.current as any)
           : changes;
       const encoded = encodeQueryParams(paramConfigMapRef.current, values);
-      setSearchParams(queryString.stringify(encoded), navigateOptions);
+      navigate(queryString.stringify(encoded), navigateOptions);
     },
-    [setSearchParams],
+    [navigate],
   );
 
   return useMemo(
@@ -75,7 +74,7 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
       paramConfigMap === null || paramConfigMap === undefined
         ? (useQueryParamsDefaultResult as any)
         : [result as any, setValue],
-    [searchParamsStringified, setValue],
+    [result, setValue],
   );
 };
 
