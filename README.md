@@ -69,6 +69,8 @@ Also, you don't need to wrap your app in `<QueryParamProvider></QueryParamProvid
 Since the API is the same, you could check the [original docs](https://github.com/pbeshai/use-query-params/tree/master/packages/use-query-params) or [original demo](https://pbeshai.github.io/use-query-params/) (all credits go to [pbeshai](https://github.com/pbeshai/)). 
 I'm copying a part of original API description here for clarity:
 
+`URLUpdateType` has also been ported.
+
 **Example**
 
 ```ts
@@ -77,7 +79,7 @@ import { useQueryParams, StringParam, NumberParam } from 'react-router-url-param
 // reads query parameters `foo` and `bar` from the URL and stores their decoded values
 const [query, setQuery] = useQueryParams({ foo: NumberParam, bar: StringParam });
 setQuery({ foo: 500 }); // will change the URL to '?foo=500'
-setQuery({ foo: 123, bar: 'zzz' }, { replace: true }); // will change the URL to '?foo=123&bar=zzz'
+setQuery({ foo: 123, bar: 'zzz' }, 'push'); // will change the URL to '?foo=123&bar=zzz'
 
 // to unset or remove a parameter set it to undefined and use pushIn or replaceIn update types
 setQuery({ foo: undefined }) // ?foo=123&bar=zzz becomes ?bar=zzz

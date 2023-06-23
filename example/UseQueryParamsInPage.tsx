@@ -29,6 +29,34 @@ export const UseQueryParamsInPage = (props: {
         >
           Set str: 'pp', nmb: 23
         </button>
+        <button
+          onClick={() => {
+            setQueryParams({ nmb: 1 }, 'pushIn');
+          }}
+        >
+          PushIn nmb: 1
+        </button>
+        <button
+          onClick={() => {
+            setQueryParams({ nmb: 2 }, 'push');
+          }}
+        >
+          Push nmb: 2
+        </button>
+        <button
+          onClick={() => {
+            setQueryParams({ nmb: 3 }, 'replaceIn');
+          }}
+        >
+          ReplaceIn nmb: 3
+        </button>
+        <button
+          onClick={() => {
+            setQueryParams({ nmb: 4 }, 'replace');
+          }}
+        >
+          Replace nmb: 4
+        </button>
       </div>
     </div>
   );
