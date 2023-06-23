@@ -49,7 +49,7 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
     if (paramConfigMap) {
       return decodeQueryParams(
         paramConfigMap,
-        queryString.parse(location.search, {}) as any,
+        queryString.parse(location.search) as any,
       );
     }
     return {};
@@ -64,7 +64,7 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
           ? changes(resultRef.current as any)
           : changes;
       const encoded = encodeQueryParams(paramConfigMapRef.current, values);
-      navigate(queryString.stringify(encoded), navigateOptions);
+      navigate('?' + queryString.stringify(encoded), navigateOptions);
     },
     [navigate],
   );
