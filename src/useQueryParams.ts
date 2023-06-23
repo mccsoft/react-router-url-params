@@ -110,7 +110,7 @@ export const useQueryParam = <D, D2 = D>(
       setQueryParams((oldValues) => {
         oldValues[name] = (value as any)(oldValues[name]);
         return oldValues;
-      });
+      }, updateType);
     } else {
       setQueryParams({ [name]: value } as any, updateType);
     }
