@@ -15,6 +15,7 @@ export const UseQueryParamsInPage = (props: {
         <div>id: {id}</div>
         <div>str: {queryParams.str}</div>
         <div>nmb: {queryParams.nmb}</div>
+        <div>asd: {JSON.stringify((queryParams as any).asd)}</div>
         <button
           onClick={() => {
             setQueryParams({ str: 'rr', nmb: 2 });
@@ -56,6 +57,20 @@ export const UseQueryParamsInPage = (props: {
           }}
         >
           Replace nmb: 4
+        </button>
+        <button
+          onClick={() => {
+            setQueryParams({ asd: 'qwe' } as any);
+          }}
+        >
+          Non-present parameter (asd: 'qwe')
+        </button>
+        <button
+          onClick={() => {
+            setQueryParams({ asd: ['qwe', 'zxc'] } as any);
+          }}
+        >
+          Non-present array parameter (asd: ['qwe', 'zxc'])
         </button>
       </div>
     </div>

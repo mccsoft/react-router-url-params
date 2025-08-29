@@ -1,16 +1,17 @@
 import {
   decodeQueryParams,
-  encodeQueryParams,
   StringParam,
   DecodedValueMap,
   QueryParamConfig,
   QueryParamConfigMap,
+  objectToSearchString,
 } from 'serialize-query-params';
 import { useLocation } from 'react-router-dom';
 import { useCallback, useMemo, useRef } from 'react';
 import shallowEqual from './shallowEqual';
 import queryString from 'query-string';
 import { useNavigate } from 'react-router';
+import { encodeQueryParams } from './encodeQueryParams';
 
 export type URLUpdateType = 'push' | 'pushIn' | 'replace' | 'replaceIn';
 type NewValueType<D> = D | ((latestValue: D) => D);
@@ -73,7 +74,7 @@ export const useQueryParams = <QPCMap extends QueryParamConfigMap>(
         });
       }
 
-      navigate('?' + queryString.stringify(newQueryParams), {
+      navigate('?' + objectToSearchString(newQueryParams), {
         replace: updateType?.startsWith('replace'),
       });
     },
