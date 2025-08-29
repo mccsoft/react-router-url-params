@@ -3,7 +3,7 @@ import { generatePath, matchPath, useMatch, useParams } from 'react-router-dom';
 import {
   StringParam,
   decodeQueryParams,
-  encodeQueryParams,
+  objectToSearchString,
 } from 'serialize-query-params';
 import {
   CreateRouteResult,
@@ -14,7 +14,7 @@ import {
 } from './types';
 import { QueryParamConfigMap } from 'serialize-query-params';
 import { useQueryParams } from './useQueryParams';
-import queryString from 'query-string';
+import { encodeQueryParams } from './encodeQueryParams';
 
 /**
  *  Generates various hooks and helpers based on URL pattern and optional parameter types.
@@ -55,7 +55,7 @@ export function createRoute<
       let result = generatePath(pattern, encodedParams as any);
 
       if (realSearchParams) {
-        const searchString = queryString.stringify(
+        const searchString = objectToSearchString(
           searchParamsConfig
             ? encodeQueryParams(
                 searchParamsConfig as any,

@@ -180,12 +180,18 @@ describe('strongly typed links', () => {
   it('link - search - number - null', () => {
     const link = createRoute('/products', undefined, { price: NumberParam });
     const result = link.link({ price: null });
-    expect(result).toStrictEqual('/products?price');
+    expect(result).toStrictEqual('/products');
   });
 
   it('link - search - number - value', () => {
     const link = createRoute('/products', undefined, { price: NumberParam });
     const result = link.link({ price: 1 });
     expect(result).toStrictEqual('/products?price=1');
+  });
+
+  it('link - search - array - non configured param', () => {
+    const link = createRoute('/products', undefined, { price: NumberParam });
+    const result = link.link({ arr: ['qwe', 'zxc'] });
+    expect(result).toStrictEqual('/products?arr=qwe&arr=zxc');
   });
 });
